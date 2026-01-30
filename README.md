@@ -16,8 +16,9 @@ Road accident victims often face life-threatening delays ("The Golden Hour") due
 
 ## ## Key Features
 * **One-Tap SOS:** Uses the Browser Geolocation API to lock GPS coordinates instantly.
-* **Smart Context Form:** (Current Work-in-Progress) Allows victims to specify the emergency type (Crash, Medical, Fire) and provide their name for responders.
-* **Progress Tracking:** Real-time visual feedback to keep the user calm while help is being dispatched.
+* **Two-Stage Emergency Flow:** Separates location locking from data entry to ensure coordinates are captured even if the user is interrupted.
+* **Contextual Dispatch:** Collects User Name and Emergency Type (Road Accident, Medical, Fire) to better inform First Responders.
+* **Live UI State Management:** Seamlessly transitions between SOS, Data Entry, and Success states without refreshing the page.
 * **Zero-Install:** Works on any mobile browser—critical for emergencies where every second counts.
 
 ## ## Technical Complexity & Stack
@@ -28,8 +29,9 @@ Road accident victims often face life-threatening delays ("The Golden Hour") due
 
 ## ## Usability & Impact
 * **Target Users:** Accident victims, bystanders, and EMS dispatchers.
-* **Impact:** By automating location sharing, we aim to reduce emergency response times by 30-50%, directly saving lives.
+* **Impact:** By automating location sharing and context gathering, we aim to reduce emergency response times by 30-50%, directly saving lives.
 
 ## ## Setup Instructions
 1. Visit the live link provided above on any smartphone or modern web browser.
 2. Grant "Location Access" when prompted to allow the SOS system to function.
+3. Once location is captured, fill in the emergency details and click "Confirm & Dispatch."
