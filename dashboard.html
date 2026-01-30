@@ -197,10 +197,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 </svg>
                             </a>
-                            <button onclick="resolveIssue(${sos.ID})" 
-                               class="bg-green-600/20 text-green-500 hover:bg-green-600 hover:text-white px-6 py-3 rounded-2xl font-black text-xs transition-all uppercase text-center">
-                                Mark Resolved
-                            </button>
+                           // Inside your alerts.forEach loop:
+<button onclick="resolveIssue(${sos.ID})" class="...">
+    MARK RESOLVED
+</button>
                         </div>
                     </div>`;
                 });
