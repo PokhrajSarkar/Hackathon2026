@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RescueLink | Victim Portal</title>
+    <title>RescueLink | SOS Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .pulse-red { animation: pulse 2s infinite; }
@@ -12,23 +12,27 @@
             70% { box-shadow: 0 0 0 20px rgba(220, 38, 38, 0); }
             100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
+        /* FORCES DROPDOWN OPTIONS TO BE VISIBLE */
+        select option {
+            background-color: #1e293b !important;
+            color: white !important;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center p-6 font-sans">
+<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center p-4 font-sans">
 
-    <div class="w-full max-w-md text-center mt-10 mb-12">
+    <header class="text-center mb-10">
         <h1 class="text-4xl font-black tracking-tighter text-red-600 italic">RESCUELINK</h1>
-        <div class="h-1 w-20 bg-red-600 mx-auto mt-2 rounded-full"></div>
+        <p class="text-slate-500 text-[10px] tracking-[0.4em] font-bold mt-1 uppercase">Advanced SOS Protocol</p>
+    </header>
+
+    <div id="step1" class="flex flex-col items-center">
+        <button onclick="triggerSOS()" class="pulse-red bg-red-600 w-52 h-52 rounded-full border-[10px] border-red-900/40 flex flex-col items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(220,38,38,0.3)]">
+            <span class="text-6xl mb-1">🆘</span>
+            <span class="text-lg font-black uppercase tracking-tighter">Report SOS</span>
+        </button>
+        <p class="mt-8 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse text-center">Tap to broadcast live location</p>
     </div>
 
-    <main class="w-full max-w-md flex flex-col items-center">
-        
-        <div id="step1" class="flex flex-col items-center space-y-8">
-            <button onclick="triggerSOS()" class="pulse-red bg-red-600 w-56 h-56 rounded-full border-[12px] border-red-900/50 flex flex-col items-center justify-center hover:scale-105 transition-all active:scale-95 shadow-2xl">
-                <span class="text-6xl mb-1">🆘</span>
-                <span class="text-xl font-black uppercase tracking-widest">Report</span>
-            </button>
-            <p class="text-slate-400 font-medium text-center px-4 animate-pulse uppercase text-xs tracking-widest">Tap to broadcast emergency location</p>
-        </div>
-
-        <div id="step2" class="hidden w-full bg-slate-900/50 backdrop-blur-xl p-8 rounded-[2.5rem
+    <div id="step2" class="hidden w-full max-w-md bg-slate-900/60 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+        <div
