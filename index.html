@@ -79,16 +79,14 @@
     };
 
     // This sends the data to your laptop via the tunnel
-    try {
-        await fetch('https://fast-heads-cough.loca.lt/api/report', {
+   // Replace the old fetch with this one
+fetch('https://rotten-teams-beam.loca.lt/api/report', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name, type: type, lat: lat, lon: lon })
-});
-        console.log("Data successfully sent to SQL Server!");
-    } catch (error) {
-        console.error("Connection failed:", error);
-    }
+    body: JSON.stringify(data)
+})
+.then(response => console.log("Data sent to SQL Server!"))
+.catch(err => console.error("Bridge Error:", err));
 
     // Show success message
     document.getElementById('step2').style.display = 'none';
