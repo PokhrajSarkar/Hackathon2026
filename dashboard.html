@@ -62,19 +62,22 @@
         const db = getFirestore(app);
 
         // 1. ATTACH RESOLVE FUNCTION TO WINDOW (CRITICAL FOR ONCLICK)
-        window.resolveIssue = async (id) => {
-            console.log("Attempting to delete document:", id);
-            if (confirm("Have you successfully responded to this emergency? \n\nClicking OK will remove this alert permanently.")) {
-                try {
-                    await deleteDoc(doc(db, "alerts", id));
-                    console.log("Deleted successfully");
-                } catch (err) {
-                    console.error("Delete failed:", err);
-                    alert("System Error: Could not remove alert.");
-                }
-            }
-        };
+        // 1. You must attach it to the 'window' object so the HTML button can see it
+window.resolveIssue = async (id) => {
+    // Adding a log helps you verify the button is actually firing
+    console.log("Resolving incident ID:", id); 
 
+    if (confirm("Are you sure you want to resolve and remove this alert?")) {
+        try {
+            // 2. Ensure 'doc' and 'deleteDoc' are imported at the top of your script
+            await deleteDoc(doc(db, "alerts", id));
+            console.log("Incident successfully removed from Firebase.");
+        } catch (error) {
+            console.error("Error removing document: ", error);
+            alert("Check your Firebase Console 'Rules' tab - you might not have 'write' permission.");
+        }
+    }
+};
         // 2. LIVE CLOCK
         setInterval(() => { 
             document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB'); 
