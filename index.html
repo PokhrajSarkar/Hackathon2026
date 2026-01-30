@@ -12,99 +12,23 @@
             70% { box-shadow: 0 0 0 20px rgba(220, 38, 38, 0); }
             100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-6">
+<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center p-6 font-sans">
 
-    <div class="mb-10 text-center">
-        <h1 class="text-4xl font-black tracking-tighter text-red-600">RESCUELINK</h1>
-        <p class="text-slate-500 text-xs tracking-[0.3em] font-bold mt-1 uppercase">Advanced SOS Protocol</p>
+    <div class="w-full max-w-md text-center mt-10 mb-12">
+        <h1 class="text-4xl font-black tracking-tighter text-red-600 italic">RESCUELINK</h1>
+        <div class="h-1 w-20 bg-red-600 mx-auto mt-2 rounded-full"></div>
     </div>
 
-    <div id="step1" class="text-center">
-        <button onclick="triggerSOS()" class="pulse-red bg-red-600 w-52 h-52 rounded-full border-[12px] border-red-900/50 flex flex-col items-center justify-center hover:scale-105 transition-all active:scale-95 shadow-2xl">
-            <span class="text-6xl mb-1">🆘</span>
-            <span class="text-xl font-black uppercase tracking-widest">Report</span>
-        </button>
-        <p class="mt-8 text-slate-400 font-medium animate-pulse">Tap to initialize emergency bridge</p>
-    </div>
-
-    <div id="step2" class="hidden glass p-8 rounded-[2.5rem] border border-white/10 w-full max-w-sm shadow-2xl">
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-1.5 h-6 bg-red-600 rounded-full"></div>
-            <h2 class="text-xl font-bold uppercase tracking-tight">Accident Profile</h2>
+    <main class="w-full max-w-md flex flex-col items-center">
+        
+        <div id="step1" class="flex flex-col items-center space-y-8">
+            <button onclick="triggerSOS()" class="pulse-red bg-red-600 w-56 h-56 rounded-full border-[12px] border-red-900/50 flex flex-col items-center justify-center hover:scale-105 transition-all active:scale-95 shadow-2xl">
+                <span class="text-6xl mb-1">🆘</span>
+                <span class="text-xl font-black uppercase tracking-widest">Report</span>
+            </button>
+            <p class="text-slate-400 font-medium text-center px-4 animate-pulse uppercase text-xs tracking-widest">Tap to broadcast emergency location</p>
         </div>
-        
-        <label class="block text-[10px] font-bold text-slate-500 mb-2 ml-1">REPORTER NAME</label>
-        <input type="text" id="uName" placeholder="Enter name" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-5 focus:border-red-600 outline-none transition-all">
 
-        <label class="block text-[10px] font-bold text-slate-500 mb-2 ml-1">ACCIDENT CATEGORY</label>
-        <select id="eType" onchange="updateSubTypes()" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-5 focus:border-red-600 outline-none appearance-none cursor-pointer">
-            <option value="Road Accident">🚗 Road Accident</option>
-            <option value="Medical Emergency">🚑 Medical Emergency</option>
-            <option value="Fire Outbreak">🔥 Fire Outbreak</option>
-        </select>
-
-        <label class="block text-[10px] font-bold text-slate-500 mb-2 ml-1 uppercase">Specific Scenario</label>
-        <select id="subType" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-8 focus:border-red-600 outline-none appearance-none cursor-pointer">
-            <option>Head-on Collision</option>
-            <option>Vehicle Rollover</option>
-            <option>Pedestrian Involved</option>
-            <option>Hit and Run</option>
-        </select>
-
-        <button onclick="finalSubmit()" class="w-full bg-red-600 py-4 rounded-2xl font-black text-white hover:bg-red-700 shadow-lg shadow-red-900/20 active:scale-95 transition-all">
-            DISPATCH RESPONDERS
-        </button>
-    </div>
-
-    <div id="step3" class="hidden text-center glass p-10 rounded-[2.5rem] border border-green-500/20">
-        <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">✓</div>
-        <h2 class="text-2xl font-bold text-green-400 mb-2 tracking-tight">System Locked</h2>
-        <p class="text-slate-400 text-sm mb-6">Dispatchers are viewing your profile and live location.</p>
-        <div class="bg-white/5 py-2 px-4 rounded-full inline-block text-[10px] font-mono text-slate-500">LAT: <span id="finalLat">--</span> | LON: <span id="finalLon">--</span></div>
-    </div>
-
-    <script>
-        let myLat = "0.000"; let myLon = "0.000";
-        
-        function updateSubTypes() {
-            const mainType = document.getElementById('eType').value;
-            const sub = document.getElementById('subType');
-            const options = {
-                "Road Accident": ["Head-on Collision", "Vehicle Rollover", "Pedestrian Involved", "Hit and Run"],
-                "Medical Emergency": ["Cardiac Arrest", "Unconscious Patient", "Severe Bleeding", "Respiratory Distress"],
-                "Fire Outbreak": ["Vehicle Fire", "Structural Fire", "Chemical Leakage", "Forest/Brush Fire"]
-            };
-            sub.innerHTML = options[mainType].map(opt => `<option>${opt}</option>`).join('');
-        }
-
-        function triggerSOS() {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((p) => {
-                    myLat = p.coords.latitude.toFixed(6);
-                    myLon = p.coords.longitude.toFixed(6);
-                });
-            }
-        }
-
-        function finalSubmit() {
-            const data = {
-                name: document.getElementById('uName').value || "Anonymous",
-                type: document.getElementById('eType').value,
-                subType: document.getElementById('subType').value,
-                lat: myLat, lon: myLon,
-                time: new Date().toLocaleTimeString()
-            };
-            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(data));
-            document.getElementById('finalLat').innerText = myLat;
-            document.getElementById('finalLon').innerText = myLon;
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step3').classList.remove('hidden');
-        }
-    </script>
-</body>
-</html>
+        <div id="step2" class="hidden w-full bg-slate-900/50 backdrop-blur-xl p-8 rounded-[2.5rem
