@@ -54,43 +54,46 @@
         }, 1000);
 
         function updateFeed() {
+            // 1. Try to grab the data
             const raw = localStorage.getItem('FINAL_HACK_DATA');
             
+            // 2. Log to console so you can see if it's hitting (Press F12 to see this)
+            console.log("Checking for SOS... Found: " + (raw ? "YES" : "NO"));
+
             if (raw) {
                 const sos = JSON.parse(raw);
                 const list = document.getElementById('list');
                 
-                // Construct Google Maps Link
+                // Construct Google Maps Link - Fixed URL format
                 const mapUrl = `https://www.google.com/maps?q=${sos.lat},${sos.lon}`;
 
                 list.innerHTML = `
-                    <div class="alert-card p-8 rounded-[2.5rem] relative">
+                    <div class="alert-card p-8 rounded-[2.5rem] relative border-2 border-red-500">
                         <div class="flex justify-between items-center mb-6">
-                            <span class="bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded">PRIORITY 1</span>
+                            <span class="bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded animate-pulse">LIVE ALERT</span>
                             <span class="text-slate-500 font-mono text-xs uppercase">${sos.time}</span>
                         </div>
                         
                         <h2 class="text-4xl font-black text-white mb-2 leading-none">${sos.type.toUpperCase()}</h2>
-                        <p class="text-slate-400 text-sm mb-8 font-bold">Patient: <span class="text-red-500">${sos.name}</span></p>
+                        <p class="text-slate-400 text-sm mb-8 font-bold tracking-widest">PATIENT: <span class="text-white">${sos.name}</span></p>
                         
-                        <div class="bg-black/50 p-6 rounded-2xl mb-8 border border-white/5 hover:border-green-500/50 transition-colors">
-                            <p class="text-[10px] text-slate-500 font-black uppercase mb-2">Live GPS Lock</p>
-                            <a href="${mapUrl}" target="_blank" class="block">
-                                <p class="font-mono text-green-400 text-xl font-bold tracking-tighter underline">
+                        <div class="bg-black/50 p-6 rounded-2xl mb-8 border border-white/10">
+                            <p class="text-[10px] text-slate-500 font-black uppercase mb-2 tracking-widest">GPS Position</p>
+                            <a href="${mapUrl}" target="_blank" class="block group">
+                                <p class="font-mono text-green-400 text-xl font-bold tracking-tighter group-hover:text-green-300">
                                     ${sos.lat}, ${sos.lon}
                                 </p>
-                                <p class="text-[10px] text-blue-400 mt-2 font-black uppercase italic">Click to Navigate →</p>
+                                <p class="text-[10px] text-blue-400 mt-2 font-black uppercase italic">Click to Open Google Maps →</p>
                             </a>
                         </div>
 
                         <button onclick="resolve()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                            Resolve Incident
+                            Clear Alert
                         </button>
                     </div>
                 `;
             }
         }
-
         function resolve() {
             if(confirm("Mark this incident as resolved?")) {
                 localStorage.removeItem('FINAL_HACK_DATA');
