@@ -8,31 +8,78 @@
 </head>
 <body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-6">
 
-    <h1 class="text-3xl font-black text-red-500 mb-10">RESCUELINK</h1>
+    <h1 class="text-3xl font-black text-red-500 mb-10 uppercase tracking-tighter">RESCUELINK</h1>
 
-    <div id="sosSection" class="text-center">
-        <button id="sosButton" class="bg-red-600 w-48 h-48 rounded-full border-8 border-red-900 text-xl font-bold shadow-2xl active:scale-95 transition-all">
+    <div id="sosSection" style="display: block; text-align: center;">
+        <button id="sosButton" onclick="handleSosClick()" class="bg-red-600 w-48 h-48 rounded-full border-8 border-red-900 text-xl font-bold shadow-2xl active:scale-95 transition-all">
             SOS REPORT
         </button>
-        <p id="statusUpdate" class="mt-4 text-slate-400 italic">Tap to start</p>
+        <p class="mt-4 text-slate-400 italic">Tap to share GPS</p>
     </div>
 
-    <div id="detailsForm" class="hidden bg-slate-800 p-6 rounded-xl border border-slate-700 w-full max-w-sm">
-        <h2 class="text-xl font-bold mb-4">Accident Details</h2>
-        <input type="text" id="userName" placeholder="Your Name" class="w-full p-3 mb-4 rounded bg-slate-700 border border-slate-600 text-white outline-none">
+    <div id="detailsForm" style="display: none;" class="bg-slate-800 p-6 rounded-xl border border-slate-700 w-full max-w-sm">
+        <h2 class="text-xl font-bold mb-4 text-red-500">Accident Details</h2>
+        <input type="text" id="userName" placeholder="Your Name" class="w-full p-3 mb-4 rounded bg-slate-700 border border-slate-600 text-white">
         <select id="emergencyType" class="w-full p-3 mb-4 rounded bg-slate-700 border border-slate-600 text-white">
-            <option>Road Accident</option>
-            <option>Medical Emergency</option>
-            <option>Fire Outbreak</option>
+            <option value="Road Accident">Road Accident</option>
+            <option value="Medical Emergency">Medical Emergency</option>
+            <option value="Fire Outbreak">Fire Outbreak</option>
         </select>
-        <button id="confirmBtn" class="w-full bg-green-600 p-3 rounded font-black text-white">CONFIRM & DISPATCH</button>
+        <button id="confirmBtn" onclick="handleConfirmClick()" class="w-full bg-green-600 p-3 rounded font-black text-white uppercase">Confirm & Dispatch</button>
     </div>
 
-    <div id="successState" class="hidden text-center bg-green-900/30 p-8 rounded-xl border border-green-500">
-        <h2 class="text-2xl font-bold text-green-400">Help is coming!</h2>
-        <p class="mt-2 text-slate-300 font-mono text-xs" id="coordDisplay"></p>
+    <div id="successState" style="display: none;" class="text-center bg-green-900/30 p-8 rounded-xl border border-green-500">
+        <h2 class="text-2xl font-bold text-green-400">Dispatch Successful</h2>
+        <p class="mt-2 text-slate-300">Responders are navigating to your location.</p>
+        <button onclick="location.reload()" class="mt-4 text-xs text-slate-500 underline">New Report</button>
     </div>
 
     <script>
-        const sosBtn = document.getElementById('sosButton');
-        const
+        // Check if script is running
+        console.log("System Initialized");
+
+        var userLat = "0.00";
+        var userLon = "0.00";
+
+        function handleSosClick() {
+            console.log("Button Clicked");
+            
+            // Switch UI immediately
+            document.getElementById('sosSection').style.display = 'none';
+            document.getElementById('detailsForm').style.display = 'block';
+
+            // Start GPS capture
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    userLat = position.coords.latitude.toFixed(6);
+                    userLon = position.coords.longitude.toFixed(6);
+                    console.log("GPS Found: " + userLat);
+                }, function(err) {
+                    console.log("GPS Error: " + err.message);
+                });
+            }
+        }
+
+        function handleConfirmClick() {
+            var name = document.getElementById('userName').value || "Anonymous";
+            var type = document.getElementById('emergencyType').value;
+
+            var sosData = {
+                name: name,
+                type: type,
+                lat: userLat,
+                lon: userLon,
+                time: new Date().toLocaleTimeString()
+            };
+
+            // Save to LocalStorage
+            localStorage.setItem('latestSOS', JSON.stringify(sosData));
+            console.log("Data Saved");
+
+            // Show Success
+            document.getElementById('detailsForm').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
