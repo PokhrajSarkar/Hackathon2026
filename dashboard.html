@@ -7,20 +7,57 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-red: #ff3b3b; --bg-dark: #05070a; --glass: rgba(17, 25, 40, 0.75); }
+        :root {
+            --primary-red: #ff3b3b;
+            --bg-dark: #05070a;
+            --glass: rgba(17, 25, 40, 0.75);
+        }
+
         body {
             background-color: var(--bg-dark);
             color: #f8fafc;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: radial-gradient(at 0% 0%, rgba(255, 59, 59, 0.05) 0px, transparent 50%);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 59, 59, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0px, transparent 50%);
         }
-        .glass-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+
+        .sos-pulse {
+            position: relative;
+        }
         .sos-pulse::before {
-            content: ''; position: absolute; width: 100%; height: 100%;
-            background: var(--primary-red); border-radius: inherit;
-            animation: ripple 2s infinite; z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            background: var(--primary-red);
+            border-radius: inherit;
+            animation: ripple 2s infinite;
+            z-index: -1;
         }
-        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .map-placeholder {
+            background: linear-gradient(45deg, #0f172a 25%, #1e293b 50%, #0f172a 75%);
+            background-size: 200% 200%;
+            animation: gradientMove 10s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
@@ -30,103 +67,9 @@
             <h1 class="text-3xl font-extrabold tracking-tighter italic">RESCUE<span class="text-red-500">LINK</span></h1>
             <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.3em]">Advanced Dispatch Interface v2.0</p>
         </div>
-        <div class="glass-card px-6 py-2">
-            <p id="clock" class="font-mono text-xl font-bold text-red-500">00:00:00</p>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-4 space-y-6">
-            <div class="glass-card p-5 border-l-4 border-red-500">
-                <p class="text-slate-400 text-[10px] uppercase font-bold mb-1">Active SOS</p>
-                <h3 id="count-val" class="text-3xl font-black">0</h3>
-            </div>
-            <div class="glass-card h-64 flex items-center justify-center relative overflow-hidden">
-                <div class="text-center z-10">
-                    <div class="w-12 h-12 bg-red-500/20 rounded-full mx-auto mb-2 sos-pulse flex items-center justify-center">📍</div>
-                    <p class="text-xs font-bold text-white uppercase tracking-widest">GPS Monitoring Active</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="lg:col-span-8">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Incoming Signal Stream</h2>
-                <span class="text-[10px] font-mono text-slate-600 italic">Auto-refresh: 3s</span>
-            </div>
-            <div id="list" class="space-y-4">
-                </div>
-        </div>
-    </main>
-
-    <script>
-    // 1. Live Clock
-    setInterval(() => { 
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB'); 
-    }, 1000);
-
-    // 2. Fetch Alerts
-    async function checkBridge() {
-        const list = document.getElementById('list');
-        const counter = document.getElementById('count-val');
         
-        try {
-            const response = await fetch('http://localhost:3000/api/alerts');
-            const alerts = await response.json();
-            counter.innerText = alerts.length;
-
-            if (alerts.length === 0) {
-                list.innerHTML = `<div class="glass-card py-20 text-center text-slate-500 font-bold uppercase text-xs">All Clear - Scanning...</div>`;
-                return;
-            }
-
-            list.innerHTML = ""; 
-            alerts.forEach(sos => {
-                // This template literal builds the cards correctly
-                list.innerHTML += `
-                <div class="glass-card p-6 flex items-center gap-6 hover:border-red-500/50 transition-all group">
-                    <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center text-3xl">🚨</div>
-                    <div class="flex-1">
-                        <div class="text-[10px] font-mono text-slate-500 mb-1">\${new Date(sos.CreatedAt).toLocaleString()}</div>
-                        <h2 class="text-xl font-black uppercase text-white">\${sos.EmergencyType}</h2>
-                        <p class="text-sm text-slate-400">Caller: <span class="text-white">\${sos.PatientName}</span></p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <a href="https://www.google.com/maps?q=\${sos.Latitude},\${sos.Longitude}" target="_blank" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-[10px] uppercase text-center">Track GPS</a>
-                        <button onclick="resolveIssue(\${sos.ID})" class="bg-red-600 text-white px-4 py-2 rounded-xl font-bold text-[10px] uppercase hover:bg-red-500 transition-colors">
-                            Mark Resolved
-                        </button>
-                    </div>
-                </div>`;
-            });
-        } catch (e) { 
-            console.log("Searching for backend..."); 
-        }
-    }
-
-    // 3. Resolve Function (Triggers your app.delete route)
-    async function resolveIssue(id) {
-        if(confirm("Permanently resolve this emergency?")) {
-            try {
-                // This hits the route you showed in image_2ea399.png
-                const response = await fetch(\`http://localhost:3000/api/resolve/\${id}\`, { 
-                    method: 'DELETE' 
-                });
-                
-                if (response.ok) { 
-                    checkBridge(); // Refresh the list immediately
-                } else {
-                    alert("Server error: Could not delete record.");
-                }
-            } catch (err) { 
-                console.error("Connection Error:", err); 
-            }
-        }
-    }
-
-    // Start the loop
-    setInterval(checkBridge, 3000);
-    checkBridge();
-</script>
-</body>
-</html>
+        <div class="flex items-center gap-6">
+            <div class="glass-card px-6 py-2 flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold">System Time</p>
+                    <p id="
