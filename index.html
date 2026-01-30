@@ -1,53 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>RescueLink SOS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RescueLink | Victim Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-white flex flex-col items-center justify-center min-h-screen p-10">
-    <h1 class="text-3xl font-bold text-red-500 mb-10">RESCUELINK SOS</h1>
-    
-    <div id="step1">
-        <button onclick="triggerSOS()" class="bg-red-600 w-48 h-48 rounded-full border-8 border-red-800 text-2xl font-black shadow-2xl active:scale-95 transition-all">SOS</button>
-    </div>
-
-    <div id="step2" class="hidden bg-slate-800 p-6 rounded-xl border border-slate-700 w-full max-w-sm">
-        <input type="text" id="uName" placeholder="Your Name" class="w-full p-3 mb-4 rounded bg-slate-700 text-white">
-        <button onclick="finalSubmit()" class="w-full bg-green-600 p-3 rounded font-bold">CONFIRM DISPATCH</button>
-    </div>
-
-    <div id="step3" class="hidden text-green-400 font-bold text-xl">✅ HELP IS ON THE WAY!</div>
-
-    <script>
-        let myLat = "Searching...";
-        let myLon = "Searching...";
-
-        function triggerSOS() {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((p) => {
-                    myLat = p.coords.latitude.toFixed(6);
-                    myLon = p.coords.longitude.toFixed(6);
-                });
-            }
+    <style>
+        .pulse-red { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
-
-        function finalSubmit() {
-            const name = document.getElementById('uName').value || "Anonymous";
-            const data = {
-                name: name,
-                lat: myLat,
-                lon: myLon,
-                time: new Date().toLocaleTimeString()
-            };
-            // THE BRIDGE: Using a unique key "FINAL_HACK_DATA"
-            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(data));
-            
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step3').classList.remove('hidden');
-        }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
     </script>
-</body>
-</html>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="mb-10 text-center">
+        <h1 class="text-4xl font-black tracking-tighter text-red-600">RESCUELINK</h1>
+        <p class="text-slate-500 text-xs tracking-[0.3em] font-bold mt-1">CS05TS | KITTENS CAN CODE</p>
+    </div>
+
+    <div id="step1" class="text-center">
+        <button onclick="triggerSOS()" class="pulse-red bg-red-600 w-52 h-52 rounded-full border-[12px] border-red-900/50 flex flex-col items-center justify-center hover:scale-105 transition-transform active:scale-95 shadow-2xl">
+            <span class="text-6xl mb-1">🆘</span>
+            <span class="text-xl font-black uppercase tracking-widest">Report</span>
+        </button>
+        <p class="mt-8 text-slate-400 font-medium animate-pulse">Tap to share live GPS coordinates</p>
+    </div>
+
+    <div id="step2" class="hidden glass p-8 rounded-[2.5rem] border border-white/10 w-full max-w-sm shadow-2xl">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-1.5 h-6 bg-red-600 rounded-full"></div>
+            <h2 class="text-xl font-bold uppercase tracking-tight">Incident Details</h2>
+        </div>
+        
+        <label class="block text-[10px] font-bold text-slate-500 mb-2 ml-1">REPORTER NAME</label>
+        <input type="text" id="uName" placeholder="Enter name (Optional)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-5 focus:border-red-600 outline-none transition-all">
+
+        <label class="block text-[10px] font-bold text-slate-500 mb-2 ml-1">EMERGENCY TYPE</label>
+        <select id="eType" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl mb-8 focus:border-red-600 outline-none appearance-none cursor-pointer">
+            <option value="Road Accident">🚗 Road Accident</option>
+            <option value="Medical Emergency">🚑 Medical Emergency</option>
+            <option value="Fire Outbreak">🔥 Fire Outbreak</option>
+        </select>
+
+        <button onclick="finalSubmit()" class="w-full bg-red-600 py-4 rounded-2xl font-black text-white hover:bg-red-700 shadow-lg shadow-red-900/20 active:scale-95 transition-all">
+            CONFIRM & DISPATCH
+        </button>
+    </div>
+
+    <div id="step3" class="hidden text-center glass p-10 rounded-[2.5rem] border border-green-500/20">
+        <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full
