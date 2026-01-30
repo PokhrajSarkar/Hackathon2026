@@ -7,84 +7,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-red: #ff3b3b;
-            --bg-dark: #05070a;
-            --glass: rgba(17, 25, 40, 0.75);
-        }
-
+        :root { --primary-red: #ff3b3b; --bg-dark: #05070a; --glass: rgba(17, 25, 40, 0.75); }
         body {
-            background-color: var(--bg-dark);
-            color: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(255, 59, 59, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0px, transparent 50%);
+            background-color: var(--bg-dark); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(at 0% 0%, rgba(255, 59, 59, 0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0px, transparent 50%);
         }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-        }
-
-        .sos-pulse {
-            position: relative;
-        }
-        .sos-pulse::before {
-            content: '';
-            position: absolute;
-            width: 100%; height: 100%;
-            background: var(--primary-red);
-            border-radius: inherit;
-            animation: ripple 2s infinite;
-            z-index: -1;
-        }
-
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
+        .glass-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+        .sos-pulse::before { content: ''; position: absolute; width: 100%; height: 100%; background: var(--primary-red); border-radius: inherit; animation: ripple 2s infinite; z-index: -1; }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
 
-    <header class="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <header class="max-w-7xl mx-auto mb-8 flex justify-between items-center">
         <div>
-            <h1 class="text-3xl font-extrabold tracking-tighter italic uppercase">RESCUE<span class="text-red-500">LINK</span></h1>
+            <h1 class="text-3xl font-extrabold italic uppercase">RESCUE<span class="text-red-500">LINK</span></h1>
             <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.3em]">Advanced Dispatch Interface v2.0</p>
         </div>
-        
-        <div class="flex items-center gap-6">
-            <div class="glass-card px-6 py-2">
-                <p class="text-[10px] text-slate-500 uppercase font-bold text-right">System Time</p>
-                <p id="clock" class="font-mono text-xl font-bold text-red-500">00:00:00</p>
-            </div>
+        <div class="glass-card px-6 py-2">
+            <p id="clock" class="font-mono text-xl font-bold text-red-500">00:00:00</p>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-4 space-y-6">
-            <div class="glass-card p-5 border-l-4 border-red-500">
-                <p class="text-slate-400 text-[10px] uppercase font-bold mb-1">Active Alerts</p>
-                <h3 id="count-val" class="text-4xl font-black">0</h3>
-            </div>
-            <div class="glass-card p-6 h-64 flex items-center justify-center text-center">
-                <div>
-                    <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 sos-pulse">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                    </div>
-                    <p class="text-sm font-bold">Signal Monitoring Active</p>
-                    <p class="text-[10px] text-slate-500 font-mono mt-1">Status: Listening to Cloud Firestore</p>
-                </div>
+            <div class="glass-card p-5 border-l-4 border-red-500 text-center">
+                <p class="text-slate-400 text-[10px] uppercase font-bold mb-1">Active SOS Signals</p>
+                <h3 id="count-val" class="text-5xl font-black">0</h3>
             </div>
         </div>
 
         <div class="lg:col-span-8">
             <div id="list" class="space-y-4">
                 <div class="glass-card py-20 text-center border-dashed border-slate-700">
-                    <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">Awaiting incoming signals...</p>
+                    <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">Scanning Cloud Frequencies...</p>
                 </div>
             </div>
         </div>
@@ -92,4 +48,53 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot } from "
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDow80r3G8Qx8BQhmGfMHd87BfQ1PyFHJ8",
+            authDomain: "rescuelink-41173.firebaseapp.com",
+            projectId: "rescuelink-41173",
+            storageBucket: "rescuelink-41173.firebasestorage.app",
+            messagingSenderId: "302545958799",
+            appId: "1:302545958799:web:dc953a1bf7fae2ab6bbdfa"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
+        // This query requires the index link from the console!
+        const q = query(collection(db, "alerts"), orderBy("timestamp", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            const list = document.getElementById('list');
+            document.getElementById('count-val').innerText = snapshot.size;
+            list.innerHTML = "";
+
+            if (snapshot.empty) {
+                list.innerHTML = `<div class="glass-card py-20 text-center border-dashed border-slate-700"><p class="text-slate-500 font-bold uppercase">No Active Alerts</p></div>`;
+                return;
+            }
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const timeStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : "Just now";
+                
+                list.innerHTML += `
+                <div class="glass-card p-6 flex items-center gap-6 border-l-4 border-red-600">
+                    <div class="text-4xl">${data.incidentType === 'Medical' ? '🚑' : '⚠️'}</div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <h2 class="text-xl font-black uppercase text-red-500">${data.incidentType}</h2>
+                            <span class="text-xs font-mono text-slate-500">${timeStr}</span>
+                        </div>
+                        <p class="text-sm text-slate-300 font-medium">Caller: <span class="text-white">${data.reportedBy}</span></p>
+                        <p class="text-sm text-slate-300 font-medium">Phone: <span class="text-white">${data.phone}</span></p>
+                    </div>
+                </div>`;
+            });
+        });
+    </script>
+</body>
+</html>
