@@ -1,69 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RescueLink SOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .pulse-red { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(220, 38, 38, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
-        select option { background-color: #1e293b !important; color: white !important; }
-    </style>
-</head>
-<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+    <script>
+        // TEST IF SCRIPT IS ALIVE
+        console.log("System Status: Online");
 
-    <header class="text-center mb-10">
-        <h1 class="text-4xl font-black text-red-600 italic">RESCUELINK</h1>
-    </header>
+        var userLat = "0.00";
+        var userLon = "0.00";
+
+        function triggerSOS() {
+            console.log("Button pressed");
+            // Hide Step 1, Show Step 2
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+
+            // Start Location Search
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    userLat = position.coords.latitude.toFixed(6);
+                    userLon = position.coords.longitude.toFixed(6);
+                    console.log("Coordinates Locked: " + userLat);
+                });
+            }
+        }
+
+        function finalSubmit() {
+            var nameField = document.getElementById('uName').value || "Anonymous";
+            var typeField = document.getElementById('eType').value;
+            
+            var payload = {
+                name: nameField,
+                type: typeField,
+                lat: userLat,
+                lon: userLon,
+                time: new Date().toLocaleTimeString()
+            };
+
+            // Send to LocalStorage Bridge
+            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(payload));
+            console.log("Data Sent to Dashboard");
+
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+        }
+    </script>
+</head>
+<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center font-sans">
 
     <div id="step1" style="display: block; text-align: center;">
-        <button onclick="triggerSOS()" class="pulse-red bg-red-600 w-52 h-52 rounded-full border-[10px] border-red-900/40 text-xl font-black shadow-2xl">
-            SOS REPORT
+        <h1 class="text-4xl font-black text-red-600 mb-10 italic">RESCUELINK</h1>
+        <button onclick="triggerSOS()" class="bg-red-600 w-52 h-52 rounded-full border-[10px] border-red-900/40 text-2xl font-black shadow-2xl active:scale-95 transition-all">
+            SOS
         </button>
-        <p class="mt-8 text-slate-500 text-xs font-bold uppercase tracking-widest">Tap to broadcast location</p>
+        <p class="mt-6 text-slate-500 font-bold uppercase text-xs">Tap to Start</p>
     </div>
 
-    <div id="step2" style="display: none;" class="w-full max-w-md bg-slate-900/60 p-8 rounded-[2rem] border border-white/5">
-        <h2 class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-4 uppercase">Accident Profile</h2>
-        <div class="space-y-4">
-            <input type="text" id="uName" placeholder="Reporter Name" class="w-full bg-slate-800 border border-white/10 p-4 rounded-xl outline-none">
-            
-            <select id="eType" onchange="updateSub()" class="w-full bg-slate-800 border border-white/10 p-4 rounded-xl outline-none">
-                <option value="Road Accident">🚗 Road Accident</option>
-                <option value="Medical Emergency">🚑 Medical Emergency</option>
-                <option value="Fire Outbreak">🔥 Fire Outbreak</option>
-            </select>
-
-            <select id="subType" class="w-full bg-slate-800 border border-white/10 p-4 rounded-xl outline-none">
-                <option>Head-on Collision</option>
-                <option>Vehicle Rollover</option>
-                <option>Pedestrian Involved</option>
-            </select>
-
-            <button onclick="finalSubmit()" class="w-full bg-red-600 py-5 rounded-xl font-black uppercase tracking-widest mt-4">
-                Confirm & Dispatch
-            </button>
-        </div>
+    <div id="step2" style="display: none;" class="w-full max-w-sm bg-slate-900 p-8 rounded-3xl border border-white/10">
+        <h2 class="text-xl font-bold mb-6 text-red-500 uppercase">Emergency Info</h2>
+        <input type="text" id="uName" placeholder="Name" class="w-full bg-slate-800 p-4 rounded-xl mb-4 text-white outline-none">
+        <select id="eType" class="w-full bg-slate-800 p-4 rounded-xl mb-6 text-white outline-none">
+            <option>Road Accident</option>
+            <option>Medical Emergency</option>
+            <option>Fire Outbreak</option>
+        </select>
+        <button onclick="finalSubmit()" class="w-full bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest">
+            Confirm Dispatch
+        </button>
     </div>
 
-    <div id="step3" style="display: none;" class="text-center bg-slate-900/60 p-10 rounded-[2rem] border border-green-500/20">
+    <div id="step3" style="display: none;" class="text-center">
         <div class="text-green-500 text-6xl mb-4">✓</div>
-        <h2 class="text-2xl font-black mb-2">SIGNAL LOCKED</h2>
-        <p class="text-slate-400 text-sm">Coordinates sent to Dashboard.</p>
+        <h2 class="text-2xl font-black">SENT</h2>
+        <p class="text-slate-400">Dispatchers are notified.</p>
     </div>
 
-    <script>
-        var lat = "0.0"; 
-        var lon = "0.0";
-
-        function updateSub() {
-            var m = document.getElementById('eType').value;
-            var s = document.getElementById('subType');
-            var o = {
-                "Road Accident": ["Head-on Collision", "Vehicle Rollover", "Pedestrian Involved"],
-                "Medical Emergency": ["Cardiac Arrest", "Severe Bleeding", "Unconscious"],
+</body>
+</html>
