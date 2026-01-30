@@ -64,17 +64,19 @@ const db = getFirestore(app); // Find this line!
 
 // --- INSERT THIS BLOCK DIRECTLY BELOW IT ---
 window.resolveIssue = async (id) => {
-    // This confirms the button is being clicked
-    console.log("Button clicked for ID:", id); 
+    console.log("Resolving incident ID:", id); // This is working!
 
     if (confirm("Mark this incident as resolved?")) {
         try {
-            // This is the line that actually deletes the document from Firebase
-            await deleteDoc(doc(db, "alerts", id));
-            console.log("Document deleted!");
+            // FIX: Ensure you are using the 'db' variable you initialized earlier
+            const docRef = doc(db, "alerts", id); 
+            await deleteDoc(docRef);
+            
+            // This will confirm the deletion actually finished
+            console.log("SUCCESS: Document removed from Firebase"); 
         } catch (error) {
-            console.error("Error during deletion:", error);
-            alert("Delete failed! Check the browser console.");
+            console.error("Firebase Delete Error:", error);
+            alert("Delete failed. Check if 'deleteDoc' and 'doc' are imported.");
         }
     }
 };
