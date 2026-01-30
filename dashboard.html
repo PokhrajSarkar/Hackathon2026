@@ -15,30 +15,29 @@
     </div>
 
     <script>
-        function checkAlerts() {
-            const data = localStorage.getItem('latestSOS');
-            if (data) {
-                const sos = JSON.parse(data);
-                document.getElementById('noData').classList.add('hidden');
-                document.getElementById('emergencyList').innerHTML = `
-                    <div class="bg-slate-800 border-l-8 border-red-600 p-6 rounded-xl shadow-2xl animate-bounce">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="text-red-500 font-black text-xl">${sos.type.toUpperCase()}</h3>
-                                <p class="text-white text-lg font-bold">${sos.name}</p>
-                            </div>
-                            <span class="text-xs text-slate-400">Just Now</span>
-                        </div>
-                        <div class="mt-4 p-3 bg-slate-900 rounded-lg font-mono text-green-400 text-sm">
-                            GPS: ${sos.lat}, ${sos.lon}
-                        </div>
-                        <button onclick="window.open('https://www.google.com/maps?q=${sos.lat},${sos.lon}')" 
-                                class="mt-4 w-full bg-blue-600 py-2 rounded-lg font-bold">ROUTE IN MAPS</button>
-                    </div>
-                `;
-            }
+        <script>
+    function checkAlerts() {
+        const data = localStorage.getItem('latestSOS');
+        if (data) {
+            const sos = JSON.parse(data);
+            const list = document.getElementById('emergencyList');
+            const noData = document.getElementById('noData');
+            
+            if(noData) noData.classList.add('hidden');
+            
+            // Display the data
+            list.innerHTML = `
+                <div class="bg-slate-800 border-l-8 border-red-600 p-6 rounded-xl animate-pulse">
+                    <h3 class="text-red-500 font-black">${sos.type}</h3>
+                    <p class="font-bold text-white">Reporter: ${sos.name}</p>
+                    <p class="text-green-400 font-mono mt-2">Location: ${sos.lat}, ${sos.lon}</p>
+                </div>
+            `;
         }
-        setInterval(checkAlerts, 2000); // Check for new data every 2 seconds
+    }
+    // Check for new data every 2 seconds
+    setInterval(checkAlerts, 2000);
+</script>
     </script>
 </body>
 </html>
