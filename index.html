@@ -114,7 +114,14 @@
             const type = document.getElementById('emergencyType').value;
 
             // Log data (In Step 2/3 of the hackathon, we will send this to a DB)
-            console.log(`Alert Logged: ${type} reported by ${name} at ${coords.lat}, ${coords.lon}`);
+            const sosData = {
+    name: name,
+    type: type,
+    lat: coords.lat,
+    lon: coords.lon,
+    time: new Date().toLocaleTimeString()
+};
+localStorage.setItem('latestSOS', JSON.stringify(sosData));
 
             // Show Success
             detailsForm.classList.add('hidden');
