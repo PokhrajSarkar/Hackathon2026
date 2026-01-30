@@ -67,8 +67,7 @@
             }
         }
 
-       function handleFinal() {
-    console.log("Submit Clicked");
+       async function handleFinal() {
     var name = document.getElementById('uName').value || "Anonymous Victim";
     var type = document.getElementById('eType').value;
 
@@ -79,18 +78,13 @@
         lon: lon
     };
 
-    // --- NEW PROPER BACKEND CONNECTION ---
-    // Replace 'YOUR-TUNNEL-URL' with the link from your terminal
-    fetch('https://fast-heads-cough.loca.lt', {
+    // PASTE YOUR LOCALTUNNEL LINK HERE
+    await fetch('https://YOUR-LINK-HERE.loca.lt/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-    })
-    .then(response => console.log("Sent to SQL Server!"))
-    .catch(err => console.error("Error connecting to Bridge:", err));
-    // -------------------------------------
+    });
 
-    // Show success UI
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'block';
 }
