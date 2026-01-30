@@ -81,10 +81,10 @@
     // This sends the data to your laptop via the tunnel
     try {
         await fetch('https://fast-heads-cough.loca.lt/api/report', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, type: type, lat: lat, lon: lon })
+});
         console.log("Data successfully sent to SQL Server!");
     } catch (error) {
         console.error("Connection failed:", error);
