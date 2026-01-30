@@ -67,26 +67,33 @@
             }
         }
 
-        function handleFinal() {
-            console.log("Submit Clicked");
-            var name = document.getElementById('uName').value || "Anonymous Victim";
-            var type = document.getElementById('eType').value;
+       function handleFinal() {
+    console.log("Submit Clicked");
+    var name = document.getElementById('uName').value || "Anonymous Victim";
+    var type = document.getElementById('eType').value;
 
-            var data = {
-                name: name,
-                type: type,
-                lat: lat,
-                lon: lon,
-                time: new Date().toLocaleTimeString()
-            };
+    var data = {
+        name: name,
+        type: type,
+        lat: lat,
+        lon: lon
+    };
 
-            // Write to bridge
-            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(data));
-            
-            // Show success
-            document.getElementById('step2').style.display = 'none';
-            document.getElementById('step3').style.display = 'block';
-        }
+    // --- NEW PROPER BACKEND CONNECTION ---
+    // Replace 'YOUR-TUNNEL-URL' with the link from your terminal
+    fetch('https://fast-heads-cough.loca.lt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => console.log("Sent to SQL Server!"))
+    .catch(err => console.error("Error connecting to Bridge:", err));
+    // -------------------------------------
+
+    // Show success UI
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'block';
+}
     </script>
 </body>
 </html>
