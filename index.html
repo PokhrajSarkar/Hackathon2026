@@ -109,24 +109,26 @@
         });
 
         // STEP 2: Submit Details
-        confirmBtn.addEventListener('click', () => {
-            const name = document.getElementById('userName').value || "Anonymous Bystander";
-            const type = document.getElementById('emergencyType').value;
+confirmBtn.addEventListener('click', () => {
+    const name = document.getElementById('userName').value || "Anonymous Bystander";
+    const type = document.getElementById('emergencyType').value;
 
-            // Log data (In Step 2/3 of the hackathon, we will send this to a DB)
-            const sosData = {
-    name: name,
-    type: type,
-    lat: coords.lat,
-    lon: coords.lon,
-    time: new Date().toLocaleTimeString()
-};
-localStorage.setItem('latestSOS', JSON.stringify(sosData));
+    // --- THIS IS THE CRITICAL PART ---
+    const sosData = {
+        name: name,
+        type: type,
+        lat: coords.lat,
+        lon: coords.lon,
+        time: new Date().toLocaleTimeString()
+    };
+    
+    // Save to browser memory
+    localStorage.setItem('latestSOS', JSON.stringify(sosData));
+    // ---------------------------------
 
-            // Show Success
-            detailsForm.classList.add('hidden');
-            successState.classList.remove('hidden');
-        });
-    </script>
+    // Show Success UI
+    detailsForm.classList.add('hidden');
+    successState.classList.remove('hidden');
+});
 </body>
 </html>
