@@ -110,7 +110,7 @@ window.resolveIssue = async (id) => {
                 const timeStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : "Now";
                 
                 // Precise GPS Link
-                const mapsUrl = https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude};
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`;
 
                 list.innerHTML += `
                 <div class="glass-card p-6 border-l-4 border-red-600 flex items-center gap-6 animate-in fade-in duration-500">
