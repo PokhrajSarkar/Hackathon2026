@@ -3,34 +3,35 @@
 **Team Name:** Kittens Can Code  
 **College Name:** St Aloysius (Deemed to be University)-AIMIT
 
-## ## Problem Statement
-Road accident victims often face life-threatening delays due to slow notification systems and the difficulty of communicating precise GPS locations to emergency responders during high-stress situations. This gap in the "Golden Hour" significantly reduces survival rates.
+## Problem Statement
+Traditional emergency reporting relies on voice calls, which are prone to human error, panic, and difficulty in communicating precise GPS locations. This delay often results in missing the "Golden Hour," significantly reducing the survival chances of road accident victims.
 
-## ## Proposed Solution
-RescueLink is a lightweight, one-tap web portal designed for instant emergency reporting. It bypasses traditional call centers to send location-verified alerts directly to an EMS Dispatch Dashboard, allowing for immediate mobilization of medical help with zero friction.
+## Proposed Solution
+RescueLink is a high-speed web-based emergency bridge. It allows victims or bystanders to broadcast their exact GPS coordinates and incident type (Road Accident, Fire, or Medical) to a centralized Dispatch Dashboard with a single tap, ensuring responders have precise data before they even leave the station.
 
-## ## Innovation & Creativity
-Unlike native apps that require pre-installation, RescueLink is a zero-install web solution. It utilizes the browser's native Geolocation API to ensure 100% accuracy in victim location without requiring the user to speak or know their surroundings. It features a two-stage logic that locks location first, then gathers context.
+## Innovation & Creativity
+* **Zero-Install Access:** No app store download required; works via link or QR code for immediate use in high-stress situations.
+* **Asynchronous GPS Locking:** Captures location in the background while the user provides context, ensuring data is ready the moment they hit dispatch.
+* **Instant Dashboard Sync:** Uses a low-latency data bridge to alert responders in real-time without manual page refreshes.
 
-## ## Technical Complexity & Stack
-* **Frontend:** HTML5, Tailwind CSS (Responsive UI)
-* **Logic:** Vanilla JavaScript (ES6+)
-* **APIs:** HTML5 Geolocation API
-* **Data Flow:** Cross-page communication via `localStorage` for simulated real-time updates.
-* **Version Control:** GitHub
-* **Deployment:** GitHub Pages
+## Technical Complexity & Stack
+* **Frontend UI:** Tailwind CSS for a high-visibility, "Emergency-Response" styled interface.
+* **Core Logic:** Vanilla JavaScript (ES6) for broad device compatibility.
+* **APIs:** HTML5 Geolocation API for high-precision coordinate tracking.
+* **Data Bridge:** LocalStorage-based state management for real-time inter-tab communication.
 
-## ## Usability & Impact
-* **Users:** Accident victims, bystanders, and EMS dispatchers.
-* **Interaction:** Users interact via a high-contrast SOS button; responders monitor a live dashboard feed.
-* **Impact:** Aims to reduce emergency response times by 30-50% by automating the data transfer process.
+## Usability & Impact
+* **User-Centric Design:** Large, high-contrast buttons for users in shock or low-light conditions.
+* **Impact:** Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments.
 
-## ## Setup Instructions
-1. Clone the repository or access the live link.
-2. Open `index.html` in any modern web browser to act as the Victim.
-3. In a separate tab (same browser), open `dashboard.html` to act as the Dispatcher.
-4. Grant location permissions when prompted to enable GPS tracking.
+## Setup Instructions
+1. Open the **Victim Portal** (`index.html`) on a mobile device or browser.
+2. Grant Location Permissions when prompted.
+3. Tap the **SOS** button to initialize.
+4. Fill in the Reporter Name and Accident Category.
+5. Hit **Dispatch Responders**.
+6. Monitor the **Dispatch Command Center** (`dashboard.html`) to see the live alert and GPS link.
 
-## ## Presentation / Demo Link
-* **Live Deployment:** [https://pokhrajsarkar.github.io/Hackathon2026/](https://pokhrajsarkar.github.io/Hackathon2026/)
-* **Responder View:** [https://pokhrajsarkar.github.io/Hackathon2026/dashboard.html](https://pokhrajsarkar.github.io/Hackathon2026/dashboard.html)
+## Presentation / Demo Link
+* **GitHub Repository:** https://github.com/PokhrajSarkar/Hackathon2026/
+* **Live Deployment:** https://pokhrajsarkar.github.io/Hackathon2026/
