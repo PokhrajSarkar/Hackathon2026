@@ -218,21 +218,20 @@
 
     // Function to "Resolve" and hide an alert
     async function resolveIssue(id) {
-    if(confirm("Confirm emergency resolved? This will permanently remove it from the database.")) {
+    if(confirm("Are you sure this emergency is resolved?")) {
         try {
-            // Send the command to the backend
             const response = await fetch(`http://localhost:3000/api/resolve/${id}`, {
                 method: 'DELETE'
             });
 
             if (response.ok) {
-                console.log("Deleted from SQL successfully");
-                checkBridge(); // Refresh the list immediately
+                // Refresh the dashboard immediately to show it's gone
+                checkBridge(); 
             } else {
-                alert("Failed to resolve on server.");
+                alert("Failed to resolve alert on the server.");
             }
         } catch (err) {
-            console.error("Network Error:", err);
+            console.error("Connection error:", err);
         }
     }
 }
