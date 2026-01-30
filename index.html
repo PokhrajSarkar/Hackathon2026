@@ -1,84 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RescueLink SOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-6">
-
-    <h1 class="text-3xl font-black text-red-500 mb-10 uppercase tracking-tighter">RESCUELINK</h1>
-
-    <div id="sosSection" style="display: block; text-align: center;">
-        <button id="sosButton" onclick="handleSosClick()" class="bg-red-600 w-48 h-48 rounded-full border-8 border-red-900 text-xl font-bold shadow-2xl active:scale-95 transition-all">
-            SOS REPORT
-        </button>
-        <p class="mt-4 text-slate-400 italic">Tap to share GPS</p>
+<body class="bg-slate-900 text-white flex flex-col items-center justify-center min-h-screen p-10">
+    <h1 class="text-3xl font-bold text-red-500 mb-10">RESCUELINK SOS</h1>
+    
+    <div id="step1">
+        <button onclick="triggerSOS()" class="bg-red-600 w-48 h-48 rounded-full border-8 border-red-800 text-2xl font-black shadow-2xl active:scale-95 transition-all">SOS</button>
     </div>
 
-    <div id="detailsForm" style="display: none;" class="bg-slate-800 p-6 rounded-xl border border-slate-700 w-full max-w-sm">
-        <h2 class="text-xl font-bold mb-4 text-red-500">Accident Details</h2>
-        <input type="text" id="userName" placeholder="Your Name" class="w-full p-3 mb-4 rounded bg-slate-700 border border-slate-600 text-white">
-        <select id="emergencyType" class="w-full p-3 mb-4 rounded bg-slate-700 border border-slate-600 text-white">
-            <option value="Road Accident">Road Accident</option>
-            <option value="Medical Emergency">Medical Emergency</option>
-            <option value="Fire Outbreak">Fire Outbreak</option>
-        </select>
-        <button id="confirmBtn" onclick="handleConfirmClick()" class="w-full bg-green-600 p-3 rounded font-black text-white uppercase">Confirm & Dispatch</button>
+    <div id="step2" class="hidden bg-slate-800 p-6 rounded-xl border border-slate-700 w-full max-w-sm">
+        <input type="text" id="uName" placeholder="Your Name" class="w-full p-3 mb-4 rounded bg-slate-700 text-white">
+        <button onclick="finalSubmit()" class="w-full bg-green-600 p-3 rounded font-bold">CONFIRM DISPATCH</button>
     </div>
 
-    <div id="successState" style="display: none;" class="text-center bg-green-900/30 p-8 rounded-xl border border-green-500">
-        <h2 class="text-2xl font-bold text-green-400">Dispatch Successful</h2>
-        <p class="mt-2 text-slate-300">Responders are navigating to your location.</p>
-        <button onclick="location.reload()" class="mt-4 text-xs text-slate-500 underline">New Report</button>
-    </div>
+    <div id="step3" class="hidden text-green-400 font-bold text-xl">✅ HELP IS ON THE WAY!</div>
 
     <script>
-        // Check if script is running
-        console.log("System Initialized");
+        let myLat = "Searching...";
+        let myLon = "Searching...";
 
-        var userLat = "0.00";
-        var userLon = "0.00";
-
-        function handleSosClick() {
-            console.log("Button Clicked");
+        function triggerSOS() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
             
-            // Switch UI immediately
-            document.getElementById('sosSection').style.display = 'none';
-            document.getElementById('detailsForm').style.display = 'block';
-
-            // Start GPS capture
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    userLat = position.coords.latitude.toFixed(6);
-                    userLon = position.coords.longitude.toFixed(6);
-                    console.log("GPS Found: " + userLat);
-                }, function(err) {
-                    console.log("GPS Error: " + err.message);
+                navigator.geolocation.getCurrentPosition((p) => {
+                    myLat = p.coords.latitude.toFixed(6);
+                    myLon = p.coords.longitude.toFixed(6);
                 });
             }
         }
 
-        function handleConfirmClick() {
-            var name = document.getElementById('userName').value || "Anonymous";
-            var type = document.getElementById('emergencyType').value;
-
-            var sosData = {
+        function finalSubmit() {
+            const name = document.getElementById('uName').value || "Anonymous";
+            const data = {
                 name: name,
-                type: type,
-                lat: userLat,
-                lon: userLon,
+                lat: myLat,
+                lon: myLon,
                 time: new Date().toLocaleTimeString()
             };
-
-            // Save to LocalStorage
-            localStorage.setItem('latestSOS', JSON.stringify(sosData));
-            console.log("Data Saved");
-
-            // Show Success
-            document.getElementById('detailsForm').style.display = 'none';
-            document.getElementById('successState').style.display = 'block';
+            // THE BRIDGE: Using a unique key "FINAL_HACK_DATA"
+            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(data));
+            
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
         }
     </script>
 </body>
