@@ -69,16 +69,14 @@
     <div id="statView" class="hidden text-center p-10">
         <div class="w-24 h-24 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-8 text-4xl animate-pulse">🚨</div>
         <h2 class="text-3xl font-black italic uppercase">Alert Live</h2>
-        <p class="text-slate-400 mt-2">Data synced to RescueLink HQ</p>
+        <p id="locStatus" class="text-slate-400 mt-2">Syncing coordinates...</p>
         <button onclick="location.reload()" class="mt-12 bg-white text-black px-12 py-4 rounded-full font-black uppercase text-xs">Stop Siren</button>
     </div>
 
     <script type="module">
-        // 1. FIREBASE IMPORTS
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 2. CONFIG FROM YOUR SCREENSHOT
         const firebaseConfig = {
             apiKey: "AIzaSyDow80r3G8Qx8BQhmGfMHd87BfQ1PyFHJ8",
             authDomain: "rescuelink-41173.firebaseapp.com",
@@ -88,13 +86,11 @@
             appId: "1:302545958799:web:dc953a1bf7fae2ab6bbdfa"
         };
 
-        // 3. INITIALIZE
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         let audioCtx, osc, sirenActive = false;
 
-        // UI HELPERS
         function show(id) {
             ['regView','sosView','pickView','statView'].forEach(v => {
                 document.getElementById(v).style.display = 'none';
@@ -102,7 +98,6 @@
             document.getElementById(id).style.display = 'block';
         }
 
-        // LOAD LOGIC
         window.addEventListener('load', () => {
             const userName = localStorage.getItem('rescue_user');
             if(userName) {
@@ -113,27 +108,21 @@
             }
         });
 
-        // REGISTER USER (Local + Firebase-ready)
         document.getElementById('btnRegister').addEventListener('click', async () => {
             const n = document.getElementById('regName').value;
             const p = document.getElementById('regPhone').value;
             if(n && p) {
-                // We save locally so we know who the user is on this phone
                 localStorage.setItem('rescue_user', n);
                 localStorage.setItem('rescue_phone', p);
-                
-                // Optional: You could also create a 'users' collection in Firebase here
                 await addDoc(collection(db, "users"), {
                     name: n,
                     phone: p,
                     joinedAt: serverTimestamp()
                 });
-                
                 window.location.reload(); 
             }
         });
 
-        // TRIGGER SOS
         document.getElementById('mainSOS').addEventListener('click', () => show('pickView'));
         document.getElementById('btnBack').addEventListener('click', () => show('sosView'));
         document.getElementById('btnReset').addEventListener('click', () => {
@@ -143,7 +132,7 @@
             }
         });
 
-        // DISPATCH TO FIREBASE
+        // DISPATCH WITH GEOLOCATION
         document.querySelectorAll('.dispatch-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const type = e.target.getAttribute('data-type');
@@ -153,23 +142,42 @@
                 show('statView');
                 startSiren();
 
-                try {
-                    // This replaces your SQL "INSERT INTO"
-                    await addDoc(collection(db, "alerts"), {
-                        incidentType: type,
-                        reportedBy: userName,
-                        phone: userPhone,
-                        status: "active",
-                        timestamp: serverTimestamp()
-                    });
-                    console.log("Alert pushed to Firestore!");
-                } catch (err) {
-                    console.error("Firebase Error:", err);
+                // COORD FETCHING LOGIC
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        await pushToFirebase(type, userName, userPhone, lat, lon);
+                        document.getElementById('locStatus').innerText = "Data synced to RescueLink HQ";
+                    }, async (error) => {
+                        console.warn("GPS Denied, sending without coords");
+                        await pushToFirebase(type, userName, userPhone, 0, 0);
+                        document.getElementById('locStatus').innerText = "Alert sent (No GPS)";
+                    }, { enableHighAccuracy: true });
+                } else {
+                    await pushToFirebase(type, userName, userPhone, 0, 0);
                 }
             });
         });
 
-        // SIREN LOGIC
+        async function pushToFirebase(type, name, phone, lat, lon) {
+            try {
+                await addDoc(collection(db, "alerts"), {
+                    incidentType: type,
+                    reportedBy: name,
+                    phone: phone,
+                    status: "active",
+                    latitude: lat,
+                    longitude: lon,
+                    timestamp: serverTimestamp()
+                });
+                console.log("Alert with GPS pushed!");
+            } catch (err) {
+                console.error("Firebase Error:", err);
+            }
+        }
+
         function startSiren() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             osc = audioCtx.createOscillator();
