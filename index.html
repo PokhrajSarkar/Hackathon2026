@@ -5,78 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RescueLink | Emergency Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center p-6">
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center p-6 font-sans">
 
     <header class="text-center my-8">
-        <h1 class="text-3xl font-black text-red-500 tracking-tighter">RESCUELINK</h1>
-        <p class="text-slate-400 text-xs">Problem Statement ID: CS05TS</p>
+        <h1 class="text-4xl font-black text-red-500 tracking-tighter">RESCUELINK</h1>
+        <p class="text-slate-400 text-xs tracking-widest mt-1">PROBLEM ID: CS05TS</p>
     </header>
 
-    <div id="hero-section" class="flex flex-col items-center">
-        <button id="sosButton" class="bg-red-600 hover:bg-red-700 w-48 h-48 rounded-full border-4 border-red-900 shadow-[0_0_50px_rgba(220,38,38,0.3)] transition-all active:scale-90 flex flex-col items-center justify-center">
-            <span class="text-5xl mb-1">🆘</span>
-            <span class="font-bold text-sm">SEND SOS</span>
-        </button>
-        <p id="statusUpdate" class="mt-6 text-slate-400 text-sm animate-pulse">Tap button to start</p>
-    </div>
-
-    <div id="detailsForm" class="hidden w-full max-w-md bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl mt-4">
-        <h2 class="text-xl font-bold mb-4 text-red-400">Accident Details</h2>
-        <div class="space-y-4 text-slate-900">
-            <div>
-                <label class="block text-slate-300 text-sm mb-1">Your Name (Optional)</label>
-                <input type="text" id="userName" placeholder="Enter name" class="w-full p-3 rounded-lg bg-slate-100 outline-none focus:ring-2 focus:ring-red-500">
+    <main class="w-full max-w-md">
+        <div id="sosSection" class="flex flex-col items-center">
+            <div class="relative">
+                <div class="absolute inset-0 bg-red-600 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+                <button id="sosButton" class="relative bg-red-600 hover:bg-red-700 w-56 h-56 rounded-full border-8 border-red-900 shadow-2xl transition-all active:scale-90 flex flex-col items-center justify-center group">
+                    <span class="text-6xl mb-2 group-hover:scale-110 transition-transform">🆘</span>
+                    <span class="font-black text-xl tracking-widest">REPORT</span>
+                </button>
             </div>
-            <div>
-                <label class="block text-slate-300 text-sm mb-1">Emergency Type</label>
-                <select id="emergencyType" class="w-full p-3 rounded-lg bg-slate-100 outline-none focus:ring-2 focus:ring-red-500">
-                    <option value="Road Accident">🚗 Road Accident</option>
-                    <option value="Medical Emergency">🚑 Medical Emergency</option>
-                    <option value="Fire">🔥 Fire</option>
-                    <option value="Other">❓ Other</option>
-                </select>
-            </div>
-            <button id="submitDetails" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors">
-                CONFIRM & DISPATCH
-            </button>
+            <p id="statusUpdate" class="mt-8 text-slate-400 font-medium text-center">Tap the button above to share your live GPS location with emergency services.</p>
         </div>
-    </div>
+
+        <div id="detailsForm" class="hidden bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-2xl">
+            <div class="flex items-center mb-6">
+                <div class="w-2 h-8 bg-red-500 rounded-full mr-3"></div>
+                <h2 class="text-2xl font-bold">Accident Details</h2>
+            </div>
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-slate-400 text-sm font-bold mb-2 ml-1">YOUR NAME</label>
+                    <input type="text" id="userName" placeholder="Full Name (Optional)" 
+                        class="w-full bg-slate-700 border border-slate-600 p-4 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-red-500 outline-none transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 text-sm font-bold mb-2 ml-1">NATURE OF EMERGENCY</label>
+                    <select id="emergencyType" 
+                        class="w-full bg-slate-700 border border-slate-600 p-4 rounded-xl text-white focus:ring-2 focus:ring-red-500 outline-none transition-all appearance-none">
+                        <option value="Road Accident">🚗 Road Accident</option>
+                        <option value="Medical Emergency">🚑 Medical Emergency</option>
+                        <option value="Fire Outbreak">🔥 Fire Outbreak</option>
+                        <option value="Other">⚠️ Other / Unknown</option>
+                    </select>
+                </div>
+
+                <button id="confirmDispatch" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-2">
+                    <span>CONFIRM & DISPATCH</span>
+                    <span class="text-xl">➔</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="successState" class="hidden text-center p-8 bg-green-900/20 border border-green-500/30 rounded-3xl">
+            <div class="text-6xl mb-4">🚑</div>
+            <h3 class="text-2xl font-bold text-green-400">Help is on the way!</h3>
+            <p class="text-slate-300 mt-2">The nearest ambulance has been notified of your exact coordinates.</p>
+            <div class="mt-6 py-2 px-4 bg-green-500/10 text-green-400 text-xs font-mono rounded-full inline-block">
+                TICKET ID: #RL-2026-X
+            </div>
+        </div>
+    </main>
 
     <script>
         const sosBtn = document.getElementById('sosButton');
-        const status = document.getElementById('statusUpdate');
-        const form = document.getElementById('detailsForm');
-        let userLocation = "";
+        const statusText = document.getElementById('statusUpdate');
+        const sosSection = document.getElementById('sosSection');
+        const detailsForm = document.getElementById('detailsForm');
+        const successState = document.getElementById('successState');
+        const confirmBtn = document.getElementById('confirmDispatch');
 
+        let coords = { lat: null, lon: null };
+
+        // STEP 1: Capture Location
         sosBtn.addEventListener('click', () => {
-            status.innerText = "Capturing precise GPS...";
+            statusText.innerText = "Accessing Secure GPS...";
+            statusText.classList.add('pulse-animation');
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
-                    userLocation = `Lat: ${position.coords.latitude}, Lon: ${position.coords.longitude}`;
+                    coords.lat = position.coords.latitude.toFixed(6);
+                    coords.lon = position.coords.longitude.toFixed(6);
                     
-                    // Hide Button, Show Form
-                    document.getElementById('hero-section').classList.add('hidden');
-                    form.classList.remove('hidden');
-                }, () => {
-                    status.innerText = "Error: Enable GPS to continue.";
+                    // Transition to Form
+                    sosSection.classList.add('hidden');
+                    detailsForm.classList.remove('hidden');
+                }, (error) => {
+                    statusText.innerText = "Error: Please enable location access to continue.";
+                    statusText.classList.remove('pulse-animation');
+                    statusText.classList.add('text-red-500');
                 });
+            } else {
+                alert("Geolocation is not supported by this browser.");
             }
         });
 
-        document.getElementById('submitDetails').addEventListener('click', () => {
-            const name = document.getElementById('userName').value || "Anonymous";
+        // STEP 2: Submit Details
+        confirmBtn.addEventListener('click', () => {
+            const name = document.getElementById('userName').value || "Anonymous Bystander";
             const type = document.getElementById('emergencyType').value;
-            
-            alert(`DATA SENT TO DISPATCH:\nName: ${name}\nType: ${type}\nLocation: ${userLocation}`);
-            
-            form.innerHTML = `
-                <div class="text-center py-6">
-                    <div class="text-5xl mb-4 text-green-500">✅</div>
-                    <h3 class="text-2xl font-bold">Help is on the way!</h3>
-                    <p class="text-slate-400 mt-2">Ambulance dispatched to your GPS location.</p>
-                </div>
-            `;
+
+            // Log data (In Step 2/3 of the hackathon, we will send this to a DB)
+            console.log(`Alert Logged: ${type} reported by ${name} at ${coords.lat}, ${coords.lon}`);
+
+            // Show Success
+            detailsForm.classList.add('hidden');
+            successState.classList.remove('hidden');
         });
     </script>
 </body>
