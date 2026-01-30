@@ -33,34 +33,35 @@
         </div>
     </div>
 
-    <script>
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+  <script>
+    function updateFeed() {
+        const raw = localStorage.getItem('FINAL_HACK_DATA');
+        if (raw) {
+            const sos = JSON.parse(raw);
+            const list = document.getElementById('list');
+            
+            // Create Google Maps Link
+            const mapUrl = `https://www.google.com/maps?q=${sos.lat},${sos.lon}`;
 
-        function updateFeed() {
-            const raw = localStorage.getItem('FINAL_HACK_DATA');
-            if (raw) {
-                const sos = JSON.parse(raw);
-                document.getElementById('list').innerHTML = `
-                    <div class="bg-slate-900 border border-red-500/50 p-8 rounded-[2rem] alert-glow relative overflow-hidden group transition-all">
-                        <div class="absolute top-0 right-0 p-4 text-[10px] font-black text-red-500 tracking-tighter">PRIORITY 1</div>
-                        <h2 class="text-red-500 font-black text-2xl mb-1">${sos.type.toUpperCase()}</h2>
-                        <p class="text-slate-400 text-sm mb-6">Patient: <span class="text-white font-bold">${sos.name}</span></p>
-                        
-                        <div class="bg-black/50 p-4 rounded-2xl mb-6">
-                            <p class="text-[10px] text-slate-500 font-bold mb-1">COORDINATES</p>
-                            <p class="font-mono text-green-400 text-sm font-bold">${sos.lat}, ${sos.lon}</p>
-                        </div>
-
-                        <a href="https://www.google.com/maps?q=${sos.lat},${sos.lon}" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-4 rounded-2xl font-black text-xs transition-all shadow-lg active:scale-95">
-                            VIEW LIVE LOCATION (MAP)
+            list.innerHTML = `
+                <div class="bg-slate-900 border-l-4 border-red-600 p-8 rounded-2xl shadow-2xl animate-pulse">
+                    <h2 class="text-red-500 font-black text-2xl mb-2">🚨 EMERGENCY DETECTED</h2>
+                    <p class="text-xl mb-4 text-white">Patient: <b>${sos.name}</b></p>
+                    
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Live Location (Click to Navigate)</p>
+                        <a href="${mapUrl}" target="_blank" class="text-green-400 font-mono font-bold text-lg hover:text-green-300 underline decoration-dotted">
+                            ${sos.lat}, ${sos.lon}
                         </a>
-
-                        <button onclick="localStorage.clear(); location.reload();" class="w-full mt-4 text-[10px] font-bold text-slate-600 hover:text-red-500 tracking-widest uppercase transition-colors">Clear Incident</button>
                     </div>
-                `;
-            }
+
+                    <p class="text-slate-500 text-xs mt-6 italic">Received at: ${sos.time}</p>
+                    <button onclick="localStorage.clear(); location.reload();" class="mt-4 text-[10px] text-slate-700 hover:text-red-500 font-bold uppercase tracking-widest transition-colors">Resolve & Clear</button>
+                </div>
+            `;
         }
-        setInterval(updateFeed, 1000);
-    </script>
+    }
+    setInterval(updateFeed, 1000);
+</script>
 </body>
 </html>
