@@ -217,13 +217,25 @@
     }
 
     // Function to "Resolve" and hide an alert
-    function resolveIssue(id) {
-        if(confirm("Confirm emergency resolved? This will remove it from the dashboard.")) {
-            resolvedAlerts.push(id);
-            localStorage.setItem('resolved_alerts', JSON.stringify(resolvedAlerts));
-            checkBridge(); // Refresh view
+    async function resolveIssue(id) {
+    if(confirm("Confirm emergency resolved? This will permanently remove it from the database.")) {
+        try {
+            // Send the command to the backend
+            const response = await fetch(`http://localhost:3000/api/resolve/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                console.log("Deleted from SQL successfully");
+                checkBridge(); // Refresh the list immediately
+            } else {
+                alert("Failed to resolve on server.");
+            }
+        } catch (err) {
+            console.error("Network Error:", err);
         }
     }
+}
 
     setInterval(checkBridge, 3000);
     checkBridge();
