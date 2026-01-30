@@ -2,96 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RescueLink SOS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RescueLink | Button Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .sos-hardware {
+            background: radial-gradient(circle at 35% 35%, #ff1f1f, #660000);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 5px 15px rgba(255,255,255,0.4);
+            border: 10px solid #1a0000;
+            cursor: pointer; /* Ensures it looks clickable */
+            z-index: 50;    /* Brings it to the very front */
+        }
+        .ripple {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.3);
+            animation: pulse 2s infinite ease-out;
+            pointer-events: none; /* Crucial: clicks go THROUGH the ring to the button */
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+    </style>
 </head>
-<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-[#010413] text-white min-h-screen flex items-center justify-center font-sans overflow-hidden">
 
-    <div id="headerArea" class="text-center mb-8">
-        <h1 class="text-4xl font-black text-red-600 italic">RESCUELINK</h1>
-        <p class="text-slate-500 text-xs font-bold uppercase mt-2">Kittens Can Code | CS05TS</p>
+    <div id="regView" class="hidden w-full max-w-sm p-10 bg-slate-900 rounded-[3rem] border border-white/10">
+        <h1 class="text-3xl font-black italic text-red-600 mb-8 text-center uppercase">RESCUELINK Registeration </h1>
+        <div class="space-y-4">
+            <input type="text" id="regName" placeholder="Full Name" class="w-full bg-slate-950 p-4 rounded-2xl border border-white/5 outline-none focus:border-red-600">
+            <input type="tel" id="regPhone" placeholder="Phone Number" class="w-full bg-slate-950 p-4 rounded-2xl border border-white/5 outline-none focus:border-red-600">
+            <button onclick="saveUser()" class="w-full bg-red-600 py-5 rounded-2xl font-black uppercase tracking-widest mt-4">Register</button>
+        </div>
     </div>
 
-    <div class="w-full max-w-sm">
-        
-        <div id="step1" style="display: block; text-align: center;">
-            <button onclick="handleSOS()" class="bg-red-600 w-52 h-52 rounded-full border-[10px] border-red-900/50 text-2xl font-black shadow-2xl active:scale-95 transition-all">
-                SOS
+    <div id="sosView" class="hidden text-center w-full max-w-md px-6">
+        <div class="mb-10 space-y-4">
+            <p id="greet" class="text-slate-400 font-bold tracking-widest uppercase text-xs"></p>
+            <button onclick="forceReset()" class="block mx-auto text-sm font-black text-red-500 uppercase tracking-widest border-2 border-red-500/40 px-8 py-2 rounded-full hover:bg-red-500 hover:text-white transition-all cursor-pointer">
+                SWITCH PROFILE
             </button>
-            <p class="mt-6 text-slate-500 text-xs font-bold uppercase">Tap to Report</p>
         </div>
 
-        <div id="step2" style="display: none;" class="bg-slate-900 p-8 rounded-3xl border border-white/10 shadow-2xl">
-            <h2 class="text-xl font-bold mb-6 text-red-500 uppercase border-l-4 border-red-600 pl-3">Incident Profile</h2>
-            <input type="text" id="uName" placeholder="Your Name" class="w-full bg-slate-800 p-4 rounded-xl mb-4 text-white border border-white/5 outline-none">
+        <div class="relative flex items-center justify-center py-10">
+            <div class="ripple"></div>
             
-            <select id="eType" class="w-full bg-slate-800 p-4 rounded-xl mb-6 text-white border border-white/5 outline-none appearance-none">
-                <option>Road Accident</option>
-                <option>Medical Emergency</option>
-                <option>Fire Outbreak</option>
-            </select>
-
-            <button onclick="handleFinal()" class="w-full bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-red-700 transition-colors">
-                Confirm Dispatch
+            <button id="mainSOS" onclick="triggerSOS()" class="sos-hardware w-64 h-64 rounded-full relative flex flex-col items-center justify-center active:scale-95 transition-all">
+                <span class="text-7xl font-black italic tracking-tighter text-white pointer-events-none">SOS</span>
+                <span class="text-xs font-bold uppercase tracking-[0.3em] mt-2 opacity-70 pointer-events-none">Push to Signal</span>
             </button>
         </div>
 
-        <div id="step3" style="display: none;" class="text-center bg-slate-900/50 p-10 rounded-3xl border border-green-500/20">
-            <div class="text-green-500 text-6xl mb-4">✓</div>
-            <h2 class="text-2xl font-black text-white">SIGNAL SENT</h2>
-            <p class="text-slate-400 text-sm mt-2">Responders are navigating to you.</p>
-        </div>
+        <p class="mt-12 text-slate-700 font-black text-[10px] uppercase tracking-[0.5em]">NETWORK: ENCRYPTED & ACTIVE</p>
+    </div>
 
+    <div id="pickView" class="hidden w-full max-w-sm px-6 text-center">
+        <h2 class="text-2xl font-black italic mb-8">SELECT EMERGENCY</h2>
+        <div class="space-y-4">
+            <button onclick="dispatch('Medical')" class="w-full p-6 bg-slate-900 rounded-3xl border-l-8 border-red-600 text-left font-bold text-lg active:scale-95">🚑 Medical Emergency</button>
+            <button onclick="dispatch('Accident')" class="w-full p-6 bg-slate-900 rounded-3xl border-l-8 border-red-600 text-left font-bold text-lg active:scale-95">🚗 Road Accident</button>
+            <button onclick="dispatch('Accident')" class="w-full p-6 bg-slate-900 rounded-3xl border-l-8 border-red-600 text-left font-bold text-lg active:scale-95">🔥 Fire Outbreak</button>
+        </div>
+        <button onclick="goBack()" class="mt-8 text-slate-500 font-bold uppercase text-xs">← Back</button>
+    </div>
+
+    <div id="statView" class="hidden text-center p-10">
+        <div class="w-24 h-24 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-8 text-4xl animate-pulse">🚨</div>
+        <h2 class="text-3xl font-black italic uppercase">Alert Live</h2>
+        <button onclick="location.reload()" class="mt-12 bg-white text-black px-12 py-4 rounded-full font-black uppercase text-xs">Stop Siren</button>
     </div>
 
     <script>
-        console.log("Script Loaded Successfully");
-        var lat = "Searching...";
-        var lon = "Searching...";
+        let audioCtx, osc, sirenActive = false;
 
-        function handleSOS() {
-            console.log("SOS Clicked");
-            // Switch UI immediately no matter what
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
+        // LOAD LOGIC
+        window.onload = () => {
+            const user = localStorage.getItem('rescue_user');
+            if(user) {
+                document.getElementById('greet').innerText = `NAME: ${user}`;
+                show('sosView');
+            } else {
+                show('regView');
+            }
+            
+            // BACKUP CLICK LISTENER (Just in case onclick="" fails)
+            const btn = document.getElementById('mainSOS');
+            if(btn) {
+                btn.addEventListener('click', triggerSOS);
+            }
+        };
 
-            // Try GPS in background
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(p) {
-                    lat = p.coords.latitude.toFixed(6);
-                    lon = p.coords.longitude.toFixed(6);
-                    console.log("GPS Locked: " + lat);
-                }, function(err) {
-                    console.warn("GPS Denied: " + err.message);
-                });
+        function show(id) {
+            ['regView','sosView','pickView','statView'].forEach(v => {
+                document.getElementById(v).style.display = 'none'; // Using .style for 100% certainty
+            });
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function saveUser() {
+            const n = document.getElementById('regName').value;
+            const p = document.getElementById('regPhone').value;
+            if(n && p) {
+                localStorage.setItem('rescue_user', n);
+                localStorage.setItem('rescue_phone', p);
+                window.location.reload(); 
             }
         }
 
-       async function handleFinal() {
-    var name = document.getElementById('uName').value || "Anonymous Victim";
-    var type = document.getElementById('eType').value;
+        function forceReset() {
+            if(confirm("Remove profile?")) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        }
 
-    var data = {
-        name: name,
-        type: type,
-        lat: lat,
-        lon: lon
-    };
+        // --- BUTTON TRIGGER ---
+        function triggerSOS() {
+            console.log("SOS Button Tapped"); // Check your browser console!
+            show('pickView');
+        }
 
-    // This sends the data to your laptop via the tunnel
-   // Replace the old fetch with this one
-fetch('https://moody-cups-make.loca.lt', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-})
-.then(response => console.log("Data sent to SQL Server!"))
-.catch(err => console.error("Bridge Error:", err));
+        function goBack() { show('sosView'); }
+        
+        function dispatch(type) { 
+            show('statView'); 
+            startSiren();
+        }
 
-    // Show success message
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step3').style.display = 'block';
-}
+        function startSiren() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            sirenActive = true;
+            function wail() {
+                if (!sirenActive) return;
+                let now = audioCtx.currentTime;
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.6);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 1.2);
+                setTimeout(wail, 1200);
+            }
+            wail();
+        }
     </script>
 </body>
 </html>
