@@ -92,9 +92,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // Added deleteDoc and doc for the resolve functionality
+        import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Your specific config from image_22524f.png
         const firebaseConfig = {
             apiKey: "AIzaSyDow80r3G8Qx8BQhmGfMHd87BfQ1PyFHJ8",
             authDomain: "rescuelink-41173.firebaseapp.com",
@@ -106,6 +106,18 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Resolve Function attached to window so HTML buttons can see it
+        window.resolveIssue = async (id) => {
+            if(confirm("Mark this emergency as resolved? This will permanently remove it from the database.")) {
+                try {
+                    await deleteDoc(doc(db, "alerts", id));
+                } catch (error) {
+                    console.error("Error resolving issue:", error);
+                    alert("Failed to resolve issue. Check console.");
+                }
+            }
+        };
 
         // Live Clock
         setInterval(() => { 
@@ -129,36 +141,9 @@
                 return;
             }
 
-            snapshot.forEach((doc) => {
-                const data = doc.data();
+            snapshot.forEach((fbDoc) => {
+                const data = fbDoc.data();
+                const docId = fbDoc.id;
                 const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : "Just now";
                 
-                let icon = "⚠️";
-                if(data.incidentType?.toLowerCase().includes("medical")) icon = "🚑";
-                if(data.incidentType?.toLowerCase().includes("fire")) icon = "🔥";
-                
-                list.innerHTML += `
-                <div class="glass-card p-6 flex items-center gap-6 border-l-4 border-red-600 animate-pulse-once">
-                    <div class="text-4xl">${icon}</div>
-                    <div class="flex-1">
-                        <div class="flex justify-between">
-                            <h2 class="text-xl font-black uppercase text-red-500">${data.incidentType || 'Emergency'}</h2>
-                            <span class="text-xs font-mono text-slate-500">${time}</span>
-                        </div>
-                        <p class="text-sm text-slate-300">Caller: <span class="text-white font-bold">${data.reportedBy || 'Unknown'}</span></p>
-                        <p class="text-sm text-slate-300">Phone: <span class="text-white font-bold">${data.phone || 'No Phone'}</span></p>
-                        <div class="mt-3 flex gap-4">
-                            <a href="https://www.google.com/maps?q=${data.latitude},${data.longitude}" target="_blank" class="text-[10px] bg-white text-black px-3 py-1 rounded font-bold uppercase">Open GPS</a>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        }, (error) => {
-            console.error("Firebase Error:", error);
-            if (error.code === 'failed-precondition') {
-                alert("Indexes are still building in Firebase. Please wait 2 minutes.");
-            }
-        });
-    </script>
-</body>
-</html>
+                let
