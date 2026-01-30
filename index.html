@@ -35,4 +35,112 @@
         </div>
 
         <div id="detailsForm" class="hidden bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-2xl">
-            <div class="flex items-center mb
+            <div class="flex items-center mb-6">
+                <div class="w-2 h-8 bg-red-500 rounded-full mr-3"></div>
+                <h2 class="text-2xl font-bold">Accident Details</h2>
+            </div>
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-slate-400 text-sm font-bold mb-2 ml-1">YOUR NAME</label>
+                    <input type="text" id="userName" placeholder="Full Name (Optional)" 
+                        class="w-full bg-slate-700 border border-slate-600 p-4 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-red-500 outline-none transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 text-sm font-bold mb-2 ml-1">NATURE OF EMERGENCY</label>
+                    <select id="emergencyType" 
+                        class="w-full bg-slate-700 border border-slate-600 p-4 rounded-xl text-white focus:ring-2 focus:ring-red-500 outline-none transition-all appearance-none">
+                        <option value="Road Accident">🚗 Road Accident</option>
+                        <option value="Medical Emergency">🚑 Medical Emergency</option>
+                        <option value="Fire Outbreak">🔥 Fire Outbreak</option>
+                        <option value="Other">⚠️ Other / Unknown</option>
+                    </select>
+                </div>
+
+                <button id="confirmDispatch" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-2">
+                    <span>CONFIRM & DISPATCH</span>
+                    <span class="text-xl">➔</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="successState" class="hidden text-center p-8 bg-green-900/20 border border-green-500/30 rounded-3xl">
+            <div class="text-6xl mb-4">🚑</div>
+            <h3 class="text-2xl font-bold text-green-400">Help is on the way!</h3>
+            <p class="text-slate-300 mt-2">The nearest ambulance has been notified of your exact coordinates.</p>
+            <div class="mt-6 py-2 px-4 bg-green-500/10 text-green-400 text-xs font-mono rounded-full inline-block">
+                TICKET ID: #RL-2026-X
+            </div>
+            <button onclick="location.reload()" class="block mt-6 text-slate-400 text-sm underline mx-auto">Report another incident</button>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const sosBtn = document.getElementById('sosButton');
+        const statusText = document.getElementById('statusUpdate');
+        const sosSection = document.getElementById('sosSection');
+        const detailsForm = document.getElementById('detailsForm');
+        const successState = document.getElementById('successState');
+        const confirmBtn = document.getElementById('confirmDispatch');
+
+        // State object
+        let coords = { lat: "Unknown", lon: "Unknown" };
+
+        // 1. CAPTURE LOCATION
+        if (sosBtn) {
+            sosBtn.addEventListener('click', () => {
+                statusText.innerText = "Accessing GPS Coordinates...";
+                statusText.classList.add('pulse-animation');
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            coords.lat = position.coords.latitude.toFixed(6);
+                            coords.lon = position.coords.longitude.toFixed(6);
+                            
+                            // Hide SOS, Show Form
+                            sosSection.classList.add('hidden');
+                            detailsForm.classList.remove('hidden');
+                        },
+                        (error) => {
+                            statusText.classList.remove('pulse-animation');
+                            statusText.classList.add('text-red-500');
+                            statusText.innerText = "Error: GPS access denied. Please enable location.";
+                            alert("Please allow location access to use the SOS feature.");
+                        },
+                        { enableHighAccuracy: true, timeout: 8000 }
+                    );
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            });
+        }
+
+        // 2. SAVE AND DISPATCH
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                const name = document.getElementById('userName').value || "Anonymous Bystander";
+                const type = document.getElementById('emergencyType').value;
+
+                // Create data object
+                const sosData = {
+                    name: name,
+                    type: type,
+                    lat: coords.lat,
+                    lon: coords.lon,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+
+                // CRITICAL: Save to LocalStorage for dashboard.html to read
+                localStorage.setItem('latestSOS', JSON.stringify(sosData));
+
+                // UI Transition to Success
+                detailsForm.classList.add('hidden');
+                successState.classList.remove('hidden');
+            });
+        }
+    </script>
+</body>
+</html>
