@@ -57,8 +57,8 @@
     </div>
 
     <div id="pickView" class="hidden w-full max-w-sm px-6 text-center">
-        <h2 class="text-2xl font-black italic mb-8">SELECT EMERGENCY</h2>
-        <div class="space-y-4">
+        <h2 class="text-2xl font-black italic mb-8 uppercase text-red-500">Select Emergency</h2>
+        <div class="space-y-4 text-white">
             <button data-type="Medical" class="dispatch-btn w-full p-6 bg-slate-900 rounded-3xl border-l-8 border-red-600 text-left font-bold text-lg active:scale-95">🚑 Medical Emergency</button>
             <button data-type="Accident" class="dispatch-btn w-full p-6 bg-slate-900 rounded-3xl border-l-8 border-red-600 text-left font-bold text-lg active:scale-95">🚗 Road Accident</button>
             <button data-type="Fire" class="dispatch-btn w-full p-6 bg-slate-900 rounded-3xl border-l-8 border-red-600 text-left font-bold text-lg active:scale-95">🔥 Fire Outbreak</button>
@@ -69,7 +69,7 @@
     <div id="statView" class="hidden text-center p-10">
         <div class="w-24 h-24 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-8 text-4xl animate-pulse">🚨</div>
         <h2 class="text-3xl font-black italic uppercase">Alert Live</h2>
-        <p id="locStatus" class="text-slate-400 mt-2">Syncing coordinates...</p>
+        <p id="locStatus" class="text-slate-400 mt-2">Checking GPS signal...</p>
         <button onclick="location.reload()" class="mt-12 bg-white text-black px-12 py-4 rounded-full font-black uppercase text-xs">Stop Siren</button>
     </div>
 
@@ -90,6 +90,7 @@
         const db = getFirestore(app);
 
         let audioCtx, osc, sirenActive = false;
+        let currentLat = 0, currentLon = 0;
 
         function show(id) {
             ['regView','sosView','pickView','statView'].forEach(v => {
@@ -114,16 +115,25 @@
             if(n && p) {
                 localStorage.setItem('rescue_user', n);
                 localStorage.setItem('rescue_phone', p);
-                await addDoc(collection(db, "users"), {
-                    name: n,
-                    phone: p,
-                    joinedAt: serverTimestamp()
-                });
                 window.location.reload(); 
             }
         });
 
-        document.getElementById('mainSOS').addEventListener('click', () => show('pickView'));
+        // TRIGGER LOCATION REQUEST ON THE VERY FIRST SOS CLICK
+        document.getElementById('mainSOS').addEventListener('click', () => {
+            show('pickView');
+            // Request permission as soon as they tap the big button
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    currentLat = pos.coords.latitude;
+                    currentLon = pos.coords.longitude;
+                    console.log("GPS Locked:", currentLat, currentLon);
+                }, (err) => {
+                    console.warn("Location permission denied.");
+                }, { enableHighAccuracy: true });
+            }
+        });
+
         document.getElementById('btnBack').addEventListener('click', () => show('sosView'));
         document.getElementById('btnReset').addEventListener('click', () => {
             if(confirm("Remove profile?")) {
@@ -132,31 +142,27 @@
             }
         });
 
-        // DISPATCH WITH GEOLOCATION
         document.querySelectorAll('.dispatch-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
-                const type = e.target.getAttribute('data-type');
+                const type = e.currentTarget.getAttribute('data-type');
                 const userName = localStorage.getItem('rescue_user') || "Unknown";
                 const userPhone = localStorage.getItem('rescue_phone') || "Unknown";
 
                 show('statView');
                 startSiren();
 
-                // COORD FETCHING LOGIC
-                if ("geolocation" in navigator) {
-                    navigator.geolocation.getCurrentPosition(async (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        
-                        await pushToFirebase(type, userName, userPhone, lat, lon);
-                        document.getElementById('locStatus').innerText = "Data synced to RescueLink HQ";
-                    }, async (error) => {
-                        console.warn("GPS Denied, sending without coords");
+                // If we don't have location yet, try one last quick fetch
+                if (currentLat === 0) {
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                        await pushToFirebase(type, userName, userPhone, pos.coords.latitude, pos.coords.longitude);
+                        document.getElementById('locStatus').innerText = "Data synced with High-Accuracy GPS";
+                    }, async () => {
                         await pushToFirebase(type, userName, userPhone, 0, 0);
-                        document.getElementById('locStatus').innerText = "Alert sent (No GPS)";
-                    }, { enableHighAccuracy: true });
+                        document.getElementById('locStatus').innerText = "Sent without location data";
+                    });
                 } else {
-                    await pushToFirebase(type, userName, userPhone, 0, 0);
+                    await pushToFirebase(type, userName, userPhone, currentLat, currentLon);
+                    document.getElementById('locStatus').innerText = "Data synced with RescueLink HQ";
                 }
             });
         });
@@ -172,7 +178,6 @@
                     longitude: lon,
                     timestamp: serverTimestamp()
                 });
-                console.log("Alert with GPS pushed!");
             } catch (err) {
                 console.error("Firebase Error:", err);
             }
