@@ -1,80 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>RescueLink SOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div id="headerArea" class="text-center mb-8">
+        <h1 class="text-4xl font-black text-red-600 italic">RESCUELINK</h1>
+        <p class="text-slate-500 text-xs font-bold uppercase mt-2">Kittens Can Code | CS05TS</p>
+    </div>
+
+    <div class="w-full max-w-sm">
+        
+        <div id="step1" style="display: block; text-align: center;">
+            <button onclick="handleSOS()" class="bg-red-600 w-52 h-52 rounded-full border-[10px] border-red-900/50 text-2xl font-black shadow-2xl active:scale-95 transition-all">
+                SOS
+            </button>
+            <p class="mt-6 text-slate-500 text-xs font-bold uppercase">Tap to Report</p>
+        </div>
+
+        <div id="step2" style="display: none;" class="bg-slate-900 p-8 rounded-3xl border border-white/10 shadow-2xl">
+            <h2 class="text-xl font-bold mb-6 text-red-500 uppercase border-l-4 border-red-600 pl-3">Incident Profile</h2>
+            <input type="text" id="uName" placeholder="Your Name" class="w-full bg-slate-800 p-4 rounded-xl mb-4 text-white border border-white/5 outline-none">
+            
+            <select id="eType" class="w-full bg-slate-800 p-4 rounded-xl mb-6 text-white border border-white/5 outline-none appearance-none">
+                <option>Road Accident</option>
+                <option>Medical Emergency</option>
+                <option>Fire Outbreak</option>
+            </select>
+
+            <button onclick="handleFinal()" class="w-full bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-red-700 transition-colors">
+                Confirm Dispatch
+            </button>
+        </div>
+
+        <div id="step3" style="display: none;" class="text-center bg-slate-900/50 p-10 rounded-3xl border border-green-500/20">
+            <div class="text-green-500 text-6xl mb-4">✓</div>
+            <h2 class="text-2xl font-black text-white">SIGNAL SENT</h2>
+            <p class="text-slate-400 text-sm mt-2">Responders are navigating to you.</p>
+        </div>
+
+    </div>
+
     <script>
-        // TEST IF SCRIPT IS ALIVE
-        console.log("System Status: Online");
+        console.log("Script Loaded Successfully");
+        var lat = "Searching...";
+        var lon = "Searching...";
 
-        var userLat = "0.00";
-        var userLon = "0.00";
-
-        function triggerSOS() {
-            console.log("Button pressed");
-            // Hide Step 1, Show Step 2
+        function handleSOS() {
+            console.log("SOS Clicked");
+            // Switch UI immediately no matter what
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
 
-            // Start Location Search
+            // Try GPS in background
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    userLat = position.coords.latitude.toFixed(6);
-                    userLon = position.coords.longitude.toFixed(6);
-                    console.log("Coordinates Locked: " + userLat);
+                navigator.geolocation.getCurrentPosition(function(p) {
+                    lat = p.coords.latitude.toFixed(6);
+                    lon = p.coords.longitude.toFixed(6);
+                    console.log("GPS Locked: " + lat);
+                }, function(err) {
+                    console.warn("GPS Denied: " + err.message);
                 });
             }
         }
 
-        function finalSubmit() {
-            var nameField = document.getElementById('uName').value || "Anonymous";
-            var typeField = document.getElementById('eType').value;
-            
-            var payload = {
-                name: nameField,
-                type: typeField,
-                lat: userLat,
-                lon: userLon,
+        function handleFinal() {
+            console.log("Submit Clicked");
+            var name = document.getElementById('uName').value || "Anonymous Victim";
+            var type = document.getElementById('eType').value;
+
+            var data = {
+                name: name,
+                type: type,
+                lat: lat,
+                lon: lon,
                 time: new Date().toLocaleTimeString()
             };
 
-            // Send to LocalStorage Bridge
-            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(payload));
-            console.log("Data Sent to Dashboard");
-
+            // Write to bridge
+            localStorage.setItem('FINAL_HACK_DATA', JSON.stringify(data));
+            
+            // Show success
             document.getElementById('step2').style.display = 'none';
             document.getElementById('step3').style.display = 'block';
         }
     </script>
-</head>
-<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center font-sans">
-
-    <div id="step1" style="display: block; text-align: center;">
-        <h1 class="text-4xl font-black text-red-600 mb-10 italic">RESCUELINK</h1>
-        <button onclick="triggerSOS()" class="bg-red-600 w-52 h-52 rounded-full border-[10px] border-red-900/40 text-2xl font-black shadow-2xl active:scale-95 transition-all">
-            SOS
-        </button>
-        <p class="mt-6 text-slate-500 font-bold uppercase text-xs">Tap to Start</p>
-    </div>
-
-    <div id="step2" style="display: none;" class="w-full max-w-sm bg-slate-900 p-8 rounded-3xl border border-white/10">
-        <h2 class="text-xl font-bold mb-6 text-red-500 uppercase">Emergency Info</h2>
-        <input type="text" id="uName" placeholder="Name" class="w-full bg-slate-800 p-4 rounded-xl mb-4 text-white outline-none">
-        <select id="eType" class="w-full bg-slate-800 p-4 rounded-xl mb-6 text-white outline-none">
-            <option>Road Accident</option>
-            <option>Medical Emergency</option>
-            <option>Fire Outbreak</option>
-        </select>
-        <button onclick="finalSubmit()" class="w-full bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest">
-            Confirm Dispatch
-        </button>
-    </div>
-
-    <div id="step3" style="display: none;" class="text-center">
-        <div class="text-green-500 text-6xl mb-4">✓</div>
-        <h2 class="text-2xl font-black">SENT</h2>
-        <p class="text-slate-400">Dispatchers are notified.</p>
-    </div>
-
 </body>
 </html>
