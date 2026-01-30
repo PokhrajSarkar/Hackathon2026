@@ -1,53 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>EMS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white p-8">
-    <h1 class="text-2xl font-black text-red-500 mb-6">RESCUELINK DISPATCH</h1>
+<body class="bg-black text-white p-10">
+    <h1 class="text-2xl font-bold text-red-500 border-b border-red-900 pb-4 mb-10">LIVE DISPATCH FEED</h1>
     
-    <div id="emergencyList" class="grid gap-4">
-        <p id="noData" class="text-slate-500 italic">Waiting for incoming signals...</p>
-    </div>
-
-    <div class="mt-20 p-4 border border-slate-700 rounded text-xs text-slate-500 font-mono">
-        DEBUGGER: <span id="debugStatus">Scanning storage...</span>
+    <div id="list">
+        <p class="text-slate-600 italic">No incoming signals... keep this tab open.</p>
     </div>
 
     <script>
-        function checkAlerts() {
-            const rawData = localStorage.getItem('latestSOS');
-            const debug = document.getElementById('debugStatus');
-            
-            if (!rawData) {
-                debug.innerText = "Storage is EMPTY. Go to index.html and click Confirm.";
-                return;
+        function updateFeed() {
+            const raw = localStorage.getItem('FINAL_HACK_DATA');
+            if (raw) {
+                const sos = JSON.parse(raw);
+                const list = document.getElementById('list');
+                
+                list.innerHTML = `
+                    <div class="bg-slate-900 border-l-4 border-red-600 p-6 rounded shadow-xl animate-pulse">
+                        <h2 class="text-red-500 font-black text-2xl">🚨 EMERGENCY DETECTED</h2>
+                        <p class="mt-2 text-xl">Patient: <b>${sos.name}</b></p>
+                        <p class="text-green-400 font-mono mt-2">Location: ${sos.lat}, ${sos.lon}</p>
+                        <p class="text-slate-500 text-xs mt-4">Time Received: ${sos.time}</p>
+                        <button onclick="localStorage.clear(); location.reload();" class="mt-4 text-xs text-slate-700 underline">Resolve & Clear</button>
+                    </div>
+                `;
             }
-
-            debug.innerText = "DATA FOUND! Updating display...";
-            const sos = JSON.parse(rawData);
-            const list = document.getElementById('emergencyList');
-            document.getElementById('noData').classList.add('hidden');
-            
-            list.innerHTML = `
-                <div class="bg-slate-800 border-l-8 border-red-600 p-6 rounded-xl shadow-2xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-red-500">${sos.type}</h3>
-                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">URGENT</span>
-                    </div>
-                    <p class="text-lg"><strong>Patient:</strong> ${sos.name}</p>
-                    <p class="text-green-400 font-mono text-sm mt-2">📍 ${sos.lat}, ${sos.lon}</p>
-                    <div class="mt-4 pt-4 border-t border-slate-700 flex gap-2">
-                        <button class="bg-blue-600 px-4 py-2 rounded font-bold text-sm">View Map</button>
-                        <button onclick="localStorage.clear(); location.reload();" class="bg-slate-700 px-4 py-2 rounded font-bold text-sm">Clear Alert</button>
-                    </div>
-                </div>
-            `;
         }
-        // Check every 1 second
-        setInterval(checkAlerts, 1000);
+        // Every 1 second, it checks the "bridge"
+        setInterval(updateFeed, 1000);
     </script>
 </body>
 </html>
