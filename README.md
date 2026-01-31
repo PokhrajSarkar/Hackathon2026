@@ -30,9 +30,8 @@ APIs: HTML5 Geolocation API for high-precision coordinate tracking and Google Ma
 
 Usability & Impact
 
-    User-Centric Design: Large, high-contrast buttons and minimal input fields designed for users in shock or low-light conditions.
-
-    Impact: Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments by eliminating information decay.
+User-Centric Design: Large, high-contrast buttons and minimal input fields designed for users in shock or low-light conditions.
+Impact: Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments by eliminating information decay.
 
 System Architecture (Data Flow)
 
