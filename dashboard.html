@@ -107,7 +107,7 @@
         const db = getFirestore(app);
 
         window.resolveIssue = async (id) => {
-            if (confirm("Confirming mission resolution. Remove from active tracking?")) {
+            if (confirm("Clear this emergency from the system?")) {
                 try {
                     await deleteDoc(doc(db, "alerts", id));
                 } catch (err) {
