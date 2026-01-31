@@ -33,13 +33,6 @@ APIs: HTML5 Geolocation API for high-precision coordinate tracking and Google Ma
 User-Centric Design: Large, high-contrast buttons and minimal input fields designed for users in shock or low-light conditions.
 Impact: Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments by eliminating information decay.
 
-**System Architecture (Data Flow)**
-
-Signal Trigger: The Victim Portal captures GPS coordinates and incident details.
-Database Ingestion: Data is pushed as a JSON document to the Firestore alerts collection.
-Live Stream: The Command Center uses a onSnapshot listener to detect new documents and injects them into the UI instantly.
-Resolution: Dispatcher triggers the resolveIssue function, which executes a deleteDoc command, clearing the incident globally.
-
 **Setup Instructions**
 
 Open the Victim Portal (index.html) on a mobile device or browser.
