@@ -13,15 +13,13 @@ Traditional emergency reporting relies on voice calls, which are prone to human 
 Proposed Solution
 
 RescueLink is a high-speed web-based emergency bridge. It allows victims or bystanders to broadcast their exact GPS coordinates and incident type (Road Accident, Fire, or Medical) to a centralized Dispatch Dashboard with a single tap. By utilizing a real-time reactive data stream, it ensures responders have precise data before they even leave the station.
+
 Innovation & Creativity
 
-    Zero-Install Access: No app store download required; works via link or QR code for immediate use in high-stress situations.
-
-    Real-Time WebSocket Sync: Leverages Google Firebase Firestore to push alerts to the dashboard in under 200ms, eliminating the need for manual page refreshes.
-
-    Tactical Command UI: A "Glassmorphism" styled interface with a pulsing notification system, optimized for low-light command center environments.
-
-    Atomic Resolution Protocol: A one-tap "Mark Resolved" feature that instantly synchronizes the database and clears the global dashboard stream.
+Zero-Install Access: No app store download required; works via link or QR code for immediate use in high-stress situations.
+Real-Time WebSocket Sync: Leverages Google Firebase Firestore to push alerts to the dashboard in under 200ms, eliminating the need for manual page refreshes.
+Tactical Command UI: A "Glassmorphism" styled interface with a pulsing notification system, optimized for low-light command center environments.
+Atomic Resolution Protocol: A one-tap "Mark Resolved" feature that instantly synchronizes the database and clears the global dashboard stream.
 
 Technical Complexity & Stack
 
