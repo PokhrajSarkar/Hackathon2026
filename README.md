@@ -24,9 +24,7 @@ Atomic Resolution Protocol: A one-tap "Mark Resolved" feature that instantly syn
 **Technical Complexity & Stack**
 
 Frontend UI: Tailwind CSS for a high-visibility, "Emergency-Response" styled interface with custom CSS animations.
-
 Core Logic: Vanilla JavaScript (ES6+) utilizing Asynchronous functions and Event Listeners.
-
 Backend / Database: Google Firebase Firestore (NoSQL) for real-time state management and data persistence.
 APIs: HTML5 Geolocation API for high-precision coordinate tracking and Google Maps API for responder intercept routing.
 
