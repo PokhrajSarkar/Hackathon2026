@@ -7,36 +7,85 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-red: #ff3b3b; --bg-dark: #05070a; --glass: rgba(17, 25, 40, 0.75); }
+        :root { --primary-red: #ff3b3b; --bg-dark: #05070a; --glass: rgba(17, 25, 40, 0.7); }
         body {
             background-color: var(--bg-dark); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: radial-gradient(at 0% 0%, rgba(255, 59, 59, 0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0px, transparent 50%);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 59, 59, 0.08) 0px, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
         }
-        .glass-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+        .glass-card { 
+            background: var(--glass); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 28px; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .emergency-card:hover {
+            border-color: rgba(255, 59, 59, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 59, 59, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0); }
+        }
+        .scanline {
+            width: 100%; height: 2px;
+            background: linear-gradient(to right, transparent, var(--primary-red), transparent);
+            opacity: 0.2;
+            position: absolute;
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8 min-h-screen">
+<body class="p-6 md:p-12 min-h-screen relative overflow-x-hidden">
+    <div class="scanline"></div>
 
-    <header class="max-w-7xl mx-auto mb-8 flex justify-between items-center">
+    <header class="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-            <h1 class="text-3xl font-extrabold italic uppercase tracking-tighter">RESCUE<span class="text-red-500">LINK</span></h1>
-            <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.3em]">Command Center v2.0</p>
+            <h1 class="text-4xl font-black italic uppercase tracking-tighter leading-none">
+                RESCUE<span class="text-red-500">LINK</span>
+            </h1>
+            <div class="flex items-center gap-2 mt-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.4em]">Encrypted Command Center</p>
+            </div>
         </div>
-        <div class="glass-card px-6 py-2">
-            <p id="clock" class="font-mono text-xl font-bold text-red-500">00:00:00</p>
+        <div class="glass-card px-8 py-3 border-red-500/20 shadow-[0_0_20px_rgba(255,59,59,0.1)]">
+            <p id="clock" class="font-mono text-2xl font-black text-red-500 tracking-wider">00:00:00</p>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-4">
-            <div class="glass-card p-5 border-l-4 border-red-500 text-center">
-                <p class="text-slate-400 text-[10px] uppercase font-bold mb-1">Active SOS Signals</p>
-                <h3 id="count-val" class="text-5xl font-black">0</h3>
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-4 space-y-6">
+            <div class="glass-card p-8 border-b-4 border-red-500 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <p class="text-slate-400 text-xs uppercase font-black tracking-widest mb-2">Active Emergencies</p>
+                <h3 id="count-val" class="text-7xl font-black tracking-tighter text-white">0</h3>
+                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-red-400 uppercase">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    Live Satellite Feed
+                </div>
             </div>
         </div>
 
         <div class="lg:col-span-8">
-            <div id="list" class="space-y-4">
+            <div id="list" class="space-y-6">
                 </div>
         </div>
     </main>
@@ -57,9 +106,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ATTACH TO WINDOW SO THE BUTTON CAN FIND IT
         window.resolveIssue = async (id) => {
-            if (confirm("Clear this emergency from the system?")) {
+            if (confirm("Confirming mission resolution. Remove from active tracking?")) {
                 try {
                     await deleteDoc(doc(db, "alerts", id));
                 } catch (err) {
@@ -68,7 +116,9 @@
             }
         };
 
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        setInterval(() => { 
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB'); 
+        }, 1000);
 
         const q = query(collection(db, "alerts"), orderBy("timestamp", "desc"));
 
@@ -80,25 +130,43 @@
             snapshot.forEach((fbDoc) => {
                 const data = fbDoc.data();
                 const id = fbDoc.id;
-                const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : "Now";
-                
-                // CORRECTED GOOGLE MAPS URL FORMAT
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`;
+                const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "Pending";
+                const mapsUrl = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
 
                 list.innerHTML += `
-                <div class="glass-card p-6 border-l-4 border-red-600 flex items-center gap-6">
-                    <div class="text-4xl">${data.incidentType === 'Medical' ? '🚑' : '⚠️'}</div>
-                    <div class="flex-1">
-                        <div class="flex justify-between mb-2">
-                            <h2 class="text-xl font-black uppercase text-red-500">${data.incidentType}</h2>
-                            <span class="text-xs font-mono text-slate-500">${time}</span>
+                <div class="emergency-card glass-card p-6 border-l-8 border-red-600 flex flex-col md:flex-row items-center gap-8 pulse-red">
+                    <div class="bg-red-500/10 p-5 rounded-3xl text-5xl">
+                        ${data.incidentType === 'Medical' ? '🚑' : data.incidentType === 'Fire' ? '🔥' : '⚠️'}
+                    </div>
+                    <div class="flex-1 w-full">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-black uppercase text-white tracking-tight">${data.incidentType}</h2>
+                                <p class="text-[9px] font-mono text-slate-500 tracking-widest uppercase mt-1">Ref ID: ${id.substring(0,8)}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-black text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10 italic">${time}</span>
+                            </div>
                         </div>
-                        <p class="text-sm text-slate-300">Caller: <span class="text-white font-bold">${data.reportedBy}</span></p>
-                        <p class="text-sm text-slate-300 mb-4">Phone: <span class="text-white font-bold">${data.phone}</span></p>
                         
-                        <div class="flex gap-3">
-                            <a href="${mapsUrl}" target="_blank" class="bg-white text-black px-4 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-gray-200 transition-all">Track Location</a>
-                            <button onclick="resolveIssue('${id}')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-green-700 transition-all">Resolve Issue</button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+                                <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Subject Name</p>
+                                <p class="text-sm font-bold text-white">${data.reportedBy}</p>
+                            </div>
+                            <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+                                <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Comms Link</p>
+                                <p class="text-sm font-bold text-white">${data.phone}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-4">
+                            <a href="${mapsUrl}" target="_blank" class="flex-1 bg-white text-black py-3 rounded-xl text-xs font-black uppercase tracking-wider text-center hover:bg-slate-200 transition-colors shadow-lg shadow-white/5">
+                                🛰️ Intercept Location
+                            </a>
+                            <button onclick="resolveIssue('${id}')" class="px-6 bg-green-600/20 text-green-500 border border-green-500/30 py-3 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-green-600 hover:text-white transition-all">
+                                Resolve
+                            </button>
                         </div>
                     </div>
                 </div>`;
