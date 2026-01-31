@@ -1,26 +1,26 @@
-**Project Name** : RescueLink
+***Project Name***: RescueLink
 
 
-**Problem Statement ID** : CS05TS
+***Problem Statement ID*** : CS05TS
 
 
-**Team Name** : Kittens Can Code
+***Team Name*** : Kittens Can Code
 
 
-**College Name**: St Aloysius (Deemed to be University)-AIMIT
+***College Name*** : St Aloysius (Deemed to be University)-AIMIT
 
 
-**Problem Statement**
+***Problem Statement***
 
 Traditional emergency reporting relies on voice calls, which are prone to human error, panic, and difficulty in communicating precise GPS locations. This delay often results in missing the "Golden Hour," significantly reducing the survival chances of road accident victims.
 
 
-**Proposed Solution**
+***Proposed Solution***
 
 RescueLink is a high-speed web-based emergency bridge. It allows victims or bystanders to broadcast their exact GPS coordinates and incident type (Road Accident, Fire, or Medical) to a centralized Dispatch Dashboard with a single tap. By utilizing a real-time reactive data stream, it ensures responders have precise data before they even leave the station.
 
 
-**Innovation & Creativity**
+***Innovation & Creativity***
 
 Zero-Install Access: No app store download required; works via link or QR code for immediate use in high-stress situations.
 
@@ -31,7 +31,7 @@ Tactical Command UI: A "Glassmorphism" styled interface with a pulsing notificat
 Atomic Resolution Protocol: A one-tap "Mark Resolved" feature that instantly synchronizes the database and clears the global dashboard stream.
 
 
-**Technical Complexity & Stack**
+***Technical Complexity & Stack***
 
 Frontend UI: Tailwind CSS for a high-visibility, "Emergency-Response" styled interface with custom CSS animations.
 
@@ -42,14 +42,14 @@ Backend / Database: Google Firebase Firestore (NoSQL) for real-time state manage
 APIs: HTML5 Geolocation API for high-precision coordinate tracking and Google Maps API for responder intercept routing.
 
 
-**Usability & Impact**
+***Usability & Impact***
 
 User-Centric Design: Large, high-contrast buttons and minimal input fields designed for users in shock or low-light conditions.
 
 Impact: Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments by eliminating information decay.
 
 
-**Setup Instructions**
+***Setup Instructions***
 
 Open the Victim Portal (index.html) on a mobile device or browser.
 Grant Location Permissions when prompted.
@@ -59,7 +59,7 @@ Hit Dispatch Responders.
 Monitor the Dispatch Command Center (dashboard.html) to view the live pulsing alert, track GPS coordinates, and mark the issue as resolved.
 
 
-**Presentation / Demo Link**
+***Presentation / Demo Link***
 
 GitHub Repository: https://github.com/PokhrajSarkar/Hackathon2026/
 
