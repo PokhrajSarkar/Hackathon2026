@@ -35,13 +35,10 @@ Impact: Provides a 1-click solution for reporting, potentially reducing emergenc
 
 System Architecture (Data Flow)
 
-    Signal Trigger: The Victim Portal captures GPS coordinates and incident details.
-
-    Database Ingestion: Data is pushed as a JSON document to the Firestore alerts collection.
-
-    Live Stream: The Command Center uses a onSnapshot listener to detect new documents and injects them into the UI instantly.
-
-    Resolution: Dispatcher triggers the resolveIssue function, which executes a deleteDoc command, clearing the incident globally.
+Signal Trigger: The Victim Portal captures GPS coordinates and incident details.
+Database Ingestion: Data is pushed as a JSON document to the Firestore alerts collection.
+Live Stream: The Command Center uses a onSnapshot listener to detect new documents and injects them into the UI instantly.
+Resolution: Dispatcher triggers the resolveIssue function, which executes a deleteDoc command, clearing the incident globally.
 
 Setup Instructions
 
