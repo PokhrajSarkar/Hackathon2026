@@ -17,20 +17,27 @@ RescueLink is a high-speed web-based emergency bridge. It allows victims or byst
 **Innovation & Creativity**
 
 Zero-Install Access: No app store download required; works via link or QR code for immediate use in high-stress situations.
+
 Real-Time WebSocket Sync: Leverages Google Firebase Firestore to push alerts to the dashboard in under 200ms, eliminating the need for manual page refreshes.
+
 Tactical Command UI: A "Glassmorphism" styled interface with a pulsing notification system, optimized for low-light command center environments.
+
 Atomic Resolution Protocol: A one-tap "Mark Resolved" feature that instantly synchronizes the database and clears the global dashboard stream.
 
 **Technical Complexity & Stack**
 
 Frontend UI: Tailwind CSS for a high-visibility, "Emergency-Response" styled interface with custom CSS animations.
+
 Core Logic: Vanilla JavaScript (ES6+) utilizing Asynchronous functions and Event Listeners.
+
 Backend / Database: Google Firebase Firestore (NoSQL) for real-time state management and data persistence.
+
 APIs: HTML5 Geolocation API for high-precision coordinate tracking and Google Maps API for responder intercept routing.
 
 **Usability & Impact**
 
 User-Centric Design: Large, high-contrast buttons and minimal input fields designed for users in shock or low-light conditions.
+
 Impact: Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments by eliminating information decay.
 
 **Setup Instructions**
