@@ -42,17 +42,12 @@ Resolution: Dispatcher triggers the resolveIssue function, which executes a dele
 
 Setup Instructions
 
-    Open the Victim Portal (index.html) on a mobile device or browser.
-
-    Grant Location Permissions when prompted.
-
-    Tap the SOS button to initialize the capture.
-
-    Fill in the Reporter Name and Incident Category.
-
-    Hit Dispatch Responders.
-
-    Monitor the Dispatch Command Center (dashboard.html) to view the live pulsing alert, track GPS coordinates, and mark the issue as resolved.
+Open the Victim Portal (index.html) on a mobile device or browser.
+Grant Location Permissions when prompted.
+Tap the SOS button to initialize the capture.
+Fill in the Reporter Name and Incident Category.
+Hit Dispatch Responders.
+Monitor the Dispatch Command Center (dashboard.html) to view the live pulsing alert, track GPS coordinates, and mark the issue as resolved.
 
 Presentation / Demo Link
 
