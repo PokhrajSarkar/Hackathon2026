@@ -1,13 +1,15 @@
-Project Name: RescueLink
+Project Name : RescueLink
 
-Problem Statement ID: CS05TS
+Problem Statement ID : CS05TS
 
-Team Name: Kittens Can Code
+Team Name : Kittens Can Code
 
 College Name: St Aloysius (Deemed to be University)-AIMIT
+
 Problem Statement
 
 Traditional emergency reporting relies on voice calls, which are prone to human error, panic, and difficulty in communicating precise GPS locations. This delay often results in missing the "Golden Hour," significantly reducing the survival chances of road accident victims.
+
 Proposed Solution
 
 RescueLink is a high-speed web-based emergency bridge. It allows victims or bystanders to broadcast their exact GPS coordinates and incident type (Road Accident, Fire, or Medical) to a centralized Dispatch Dashboard with a single tap. By utilizing a real-time reactive data stream, it ensures responders have precise data before they even leave the station.
