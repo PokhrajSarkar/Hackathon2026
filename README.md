@@ -1,37 +1,68 @@
-# Project Name: RescueLink
-**Problem Statement ID:** CS05TS  
-**Team Name:** Kittens Can Code  
-**College Name:** St Aloysius (Deemed to be University)-AIMIT
+Project Name: RescueLink
 
-## Problem Statement
+Problem Statement ID: CS05TS
+
+Team Name: Kittens Can Code
+
+College Name: St Aloysius (Deemed to be University)-AIMIT
+Problem Statement
+
 Traditional emergency reporting relies on voice calls, which are prone to human error, panic, and difficulty in communicating precise GPS locations. This delay often results in missing the "Golden Hour," significantly reducing the survival chances of road accident victims.
+Proposed Solution
 
-## Proposed Solution
-RescueLink is a high-speed web-based emergency bridge. It allows victims or bystanders to broadcast their exact GPS coordinates and incident type (Road Accident, Fire, or Medical) to a centralized Dispatch Dashboard with a single tap, ensuring responders have precise data before they even leave the station.
+RescueLink is a high-speed web-based emergency bridge. It allows victims or bystanders to broadcast their exact GPS coordinates and incident type (Road Accident, Fire, or Medical) to a centralized Dispatch Dashboard with a single tap. By utilizing a real-time reactive data stream, it ensures responders have precise data before they even leave the station.
+Innovation & Creativity
 
-## Innovation & Creativity
-* **Zero-Install Access:** No app store download required; works via link or QR code for immediate use in high-stress situations.
-* **Asynchronous GPS Locking:** Captures location in the background while the user provides context, ensuring data is ready the moment they hit dispatch.
-* **Instant Dashboard Sync:** Uses a low-latency data bridge to alert responders in real-time without manual page refreshes.
+    Zero-Install Access: No app store download required; works via link or QR code for immediate use in high-stress situations.
 
-## Technical Complexity & Stack
-* **Frontend UI:** Tailwind CSS for a high-visibility, "Emergency-Response" styled interface.
-* **Core Logic:** Vanilla JavaScript (ES6) for broad device compatibility.
-* **APIs:** HTML5 Geolocation API for high-precision coordinate tracking.
-* **Data Bridge:** LocalStorage-based state management for real-time inter-tab communication.
+    Real-Time WebSocket Sync: Leverages Google Firebase Firestore to push alerts to the dashboard in under 200ms, eliminating the need for manual page refreshes.
 
-## Usability & Impact
-* **User-Centric Design:** Large, high-contrast buttons for users in shock or low-light conditions.
-* **Impact:** Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments.
+    Tactical Command UI: A "Glassmorphism" styled interface with a pulsing notification system, optimized for low-light command center environments.
 
-## Setup Instructions
-1. Open the **Victim Portal** (`index.html`) on a mobile device or browser.
-2. Grant Location Permissions when prompted.
-3. Tap the **SOS** button to initialize.
-4. Fill in the Reporter Name and Accident Category.
-5. Hit **Dispatch Responders**.
-6. Monitor the **Dispatch Command Center** (`dashboard.html`) to see the live alert and GPS link.
+    Atomic Resolution Protocol: A one-tap "Mark Resolved" feature that instantly synchronizes the database and clears the global dashboard stream.
 
-## Presentation / Demo Link
-* **GitHub Repository:** https://github.com/PokhrajSarkar/Hackathon2026/
-* **Live Deployment:** https://pokhrajsarkar.github.io/Hackathon2026/
+Technical Complexity & Stack
+
+    Frontend UI: Tailwind CSS for a high-visibility, "Emergency-Response" styled interface with custom CSS animations.
+
+    Core Logic: Vanilla JavaScript (ES6+) utilizing Asynchronous functions and Event Listeners.
+
+    Backend / Database: Google Firebase Firestore (NoSQL) for real-time state management and data persistence.
+
+    APIs: HTML5 Geolocation API for high-precision coordinate tracking and Google Maps API for responder intercept routing.
+
+Usability & Impact
+
+    User-Centric Design: Large, high-contrast buttons and minimal input fields designed for users in shock or low-light conditions.
+
+    Impact: Provides a 1-click solution for reporting, potentially reducing emergency arrival times by 30-50% in urban and rural environments by eliminating information decay.
+
+System Architecture (Data Flow)
+
+    Signal Trigger: The Victim Portal captures GPS coordinates and incident details.
+
+    Database Ingestion: Data is pushed as a JSON document to the Firestore alerts collection.
+
+    Live Stream: The Command Center uses a onSnapshot listener to detect new documents and injects them into the UI instantly.
+
+    Resolution: Dispatcher triggers the resolveIssue function, which executes a deleteDoc command, clearing the incident globally.
+
+Setup Instructions
+
+    Open the Victim Portal (index.html) on a mobile device or browser.
+
+    Grant Location Permissions when prompted.
+
+    Tap the SOS button to initialize the capture.
+
+    Fill in the Reporter Name and Incident Category.
+
+    Hit Dispatch Responders.
+
+    Monitor the Dispatch Command Center (dashboard.html) to view the live pulsing alert, track GPS coordinates, and mark the issue as resolved.
+
+Presentation / Demo Link
+
+    GitHub Repository: https://github.com/PokhrajSarkar/Hackathon2026/
+
+    Live Deployment: https://pokhrajsarkar.github.io/Hackathon2026/
